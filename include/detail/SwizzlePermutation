@@ -1,0 +1,496 @@
+#pragma once
+// todo: can we use meta programming to generate all permutations at compile time?
+
+#define SWIZZLE_2      \
+Swizzle<Vector, Component, 0, 0> xx; \
+Swizzle<Vector, Component, 0, 1> xy; \
+Swizzle<Vector, Component, 1, 0> yx; \
+Swizzle<Vector, Component, 1, 1> yy; \
+Swizzle<Vector, Component, 0, 0, 0> xxx; \
+Swizzle<Vector, Component, 0, 0, 1> xxy; \
+Swizzle<Vector, Component, 0, 1, 0> xyx; \
+Swizzle<Vector, Component, 0, 1, 1> xyy; \
+Swizzle<Vector, Component, 1, 0, 0> yxx; \
+Swizzle<Vector, Component, 1, 0, 1> yxy; \
+Swizzle<Vector, Component, 1, 1, 0> yyx; \
+Swizzle<Vector, Component, 1, 1, 1> yyy; \
+Swizzle<Vector, Component, 0, 0, 0, 0> xxxx; \
+Swizzle<Vector, Component, 0, 0, 0, 1> xxxy; \
+Swizzle<Vector, Component, 0, 0, 1, 0> xxyx; \
+Swizzle<Vector, Component, 0, 0, 1, 1> xxyy; \
+Swizzle<Vector, Component, 0, 1, 0, 0> xyxx; \
+Swizzle<Vector, Component, 0, 1, 0, 1> xyxy; \
+Swizzle<Vector, Component, 0, 1, 1, 0> xyyx; \
+Swizzle<Vector, Component, 0, 1, 1, 1> xyyy; \
+Swizzle<Vector, Component, 1, 0, 0, 0> yxxx; \
+Swizzle<Vector, Component, 1, 0, 0, 1> yxxy; \
+Swizzle<Vector, Component, 1, 0, 1, 0> yxyx; \
+Swizzle<Vector, Component, 1, 0, 1, 1> yxyy; \
+Swizzle<Vector, Component, 1, 1, 0, 0> yyxx; \
+Swizzle<Vector, Component, 1, 1, 0, 1> yyxy; \
+Swizzle<Vector, Component, 1, 1, 1, 0> yyyx; \
+Swizzle<Vector, Component, 1, 1, 1, 1> yyyy;
+
+#define SWIZZLE_3      \
+Swizzle<Vector, Component, 0, 0> xx; \
+Swizzle<Vector, Component, 0, 1> xy; \
+Swizzle<Vector, Component, 0, 2> xz; \
+Swizzle<Vector, Component, 0, 3> xw; \
+Swizzle<Vector, Component, 1, 0> yx; \
+Swizzle<Vector, Component, 1, 1> yy; \
+Swizzle<Vector, Component, 1, 2> yz; \
+Swizzle<Vector, Component, 1, 3> yw; \
+Swizzle<Vector, Component, 2, 0> zx; \
+Swizzle<Vector, Component, 2, 1> zy; \
+Swizzle<Vector, Component, 2, 2> zz; \
+Swizzle<Vector, Component, 2, 3> zw; \
+Swizzle<Vector, Component, 3, 0> wx; \
+Swizzle<Vector, Component, 3, 1> wy; \
+Swizzle<Vector, Component, 3, 2> wz; \
+Swizzle<Vector, Component, 3, 3> ww; \
+Swizzle<Vector, Component, 0, 0, 0> xxx; \
+Swizzle<Vector, Component, 0, 0, 1> xxy; \
+Swizzle<Vector, Component, 0, 0, 2> xxz; \
+Swizzle<Vector, Component, 0, 1, 0> xyx; \
+Swizzle<Vector, Component, 0, 1, 1> xyy; \
+Swizzle<Vector, Component, 0, 1, 2> xyz; \
+Swizzle<Vector, Component, 0, 2, 0> xzx; \
+Swizzle<Vector, Component, 0, 2, 1> xzy; \
+Swizzle<Vector, Component, 0, 2, 2> xzz; \
+Swizzle<Vector, Component, 1, 0, 0> yxx; \
+Swizzle<Vector, Component, 1, 0, 1> yxy; \
+Swizzle<Vector, Component, 1, 0, 2> yxz; \
+Swizzle<Vector, Component, 1, 1, 0> yyx; \
+Swizzle<Vector, Component, 1, 1, 1> yyy; \
+Swizzle<Vector, Component, 1, 1, 2> yyz; \
+Swizzle<Vector, Component, 1, 2, 0> yzx; \
+Swizzle<Vector, Component, 1, 2, 1> yzy; \
+Swizzle<Vector, Component, 1, 2, 2> yzz; \
+Swizzle<Vector, Component, 2, 0, 0> zxx; \
+Swizzle<Vector, Component, 2, 0, 1> zxy; \
+Swizzle<Vector, Component, 2, 0, 2> zxz; \
+Swizzle<Vector, Component, 2, 1, 0> zyx; \
+Swizzle<Vector, Component, 2, 1, 1> zyy; \
+Swizzle<Vector, Component, 2, 1, 2> zyz; \
+Swizzle<Vector, Component, 2, 2, 0> zzx; \
+Swizzle<Vector, Component, 2, 2, 1> zzy; \
+Swizzle<Vector, Component, 2, 2, 2> zzz; \
+Swizzle<Vector, Component, 0, 0, 0, 0> xxxx; \
+Swizzle<Vector, Component, 0, 0, 0, 1> xxxy; \
+Swizzle<Vector, Component, 0, 0, 0, 2> xxxz; \
+Swizzle<Vector, Component, 0, 0, 1, 0> xxyx; \
+Swizzle<Vector, Component, 0, 0, 1, 1> xxyy; \
+Swizzle<Vector, Component, 0, 0, 1, 2> xxyz; \
+Swizzle<Vector, Component, 0, 0, 2, 0> xxzx; \
+Swizzle<Vector, Component, 0, 0, 2, 1> xxzy; \
+Swizzle<Vector, Component, 0, 0, 2, 2> xxzz; \
+Swizzle<Vector, Component, 0, 1, 0, 0> xyxx; \
+Swizzle<Vector, Component, 0, 1, 0, 1> xyxy; \
+Swizzle<Vector, Component, 0, 1, 0, 2> xyxz; \
+Swizzle<Vector, Component, 0, 1, 1, 0> xyyx; \
+Swizzle<Vector, Component, 0, 1, 1, 1> xyyy; \
+Swizzle<Vector, Component, 0, 1, 1, 2> xyyz; \
+Swizzle<Vector, Component, 0, 1, 2, 0> xyzx; \
+Swizzle<Vector, Component, 0, 1, 2, 1> xyzy; \
+Swizzle<Vector, Component, 0, 1, 2, 2> xyzz; \
+Swizzle<Vector, Component, 0, 2, 0, 0> xzxx; \
+Swizzle<Vector, Component, 0, 2, 0, 1> xzxy; \
+Swizzle<Vector, Component, 0, 2, 0, 2> xzxz; \
+Swizzle<Vector, Component, 0, 2, 1, 0> xzyx; \
+Swizzle<Vector, Component, 0, 2, 1, 1> xzyy; \
+Swizzle<Vector, Component, 0, 2, 1, 2> xzyz; \
+Swizzle<Vector, Component, 0, 2, 2, 0> xzzx; \
+Swizzle<Vector, Component, 0, 2, 2, 1> xzzy; \
+Swizzle<Vector, Component, 0, 2, 2, 2> xzzz; \
+Swizzle<Vector, Component, 1, 0, 0, 0> yxxx; \
+Swizzle<Vector, Component, 1, 0, 0, 1> yxxy; \
+Swizzle<Vector, Component, 1, 0, 0, 2> yxxz; \
+Swizzle<Vector, Component, 1, 0, 1, 0> yxyx; \
+Swizzle<Vector, Component, 1, 0, 1, 1> yxyy; \
+Swizzle<Vector, Component, 1, 0, 1, 2> yxyz; \
+Swizzle<Vector, Component, 1, 0, 2, 0> yxzx; \
+Swizzle<Vector, Component, 1, 0, 2, 1> yxzy; \
+Swizzle<Vector, Component, 1, 0, 2, 2> yxzz; \
+Swizzle<Vector, Component, 1, 1, 0, 0> yyxx; \
+Swizzle<Vector, Component, 1, 1, 0, 1> yyxy; \
+Swizzle<Vector, Component, 1, 1, 0, 2> yyxz; \
+Swizzle<Vector, Component, 1, 1, 1, 0> yyyx; \
+Swizzle<Vector, Component, 1, 1, 1, 1> yyyy; \
+Swizzle<Vector, Component, 1, 1, 1, 2> yyyz; \
+Swizzle<Vector, Component, 1, 1, 2, 0> yyzx; \
+Swizzle<Vector, Component, 1, 1, 2, 1> yyzy; \
+Swizzle<Vector, Component, 1, 1, 2, 2> yyzz; \
+Swizzle<Vector, Component, 1, 2, 0, 0> yzxx; \
+Swizzle<Vector, Component, 1, 2, 0, 1> yzxy; \
+Swizzle<Vector, Component, 1, 2, 0, 2> yzxz; \
+Swizzle<Vector, Component, 1, 2, 1, 0> yzyx; \
+Swizzle<Vector, Component, 1, 2, 1, 1> yzyy; \
+Swizzle<Vector, Component, 1, 2, 1, 2> yzyz; \
+Swizzle<Vector, Component, 1, 2, 2, 0> yzzx; \
+Swizzle<Vector, Component, 1, 2, 2, 1> yzzy; \
+Swizzle<Vector, Component, 1, 2, 2, 2> yzzz; \
+Swizzle<Vector, Component, 2, 0, 0, 0> zxxx; \
+Swizzle<Vector, Component, 2, 0, 0, 1> zxxy; \
+Swizzle<Vector, Component, 2, 0, 0, 2> zxxz; \
+Swizzle<Vector, Component, 2, 0, 1, 0> zxyx; \
+Swizzle<Vector, Component, 2, 0, 1, 1> zxyy; \
+Swizzle<Vector, Component, 2, 0, 1, 2> zxyz; \
+Swizzle<Vector, Component, 2, 0, 2, 0> zxzx; \
+Swizzle<Vector, Component, 2, 0, 2, 1> zxzy; \
+Swizzle<Vector, Component, 2, 0, 2, 2> zxzz; \
+Swizzle<Vector, Component, 2, 1, 0, 0> zyxx; \
+Swizzle<Vector, Component, 2, 1, 0, 1> zyxy; \
+Swizzle<Vector, Component, 2, 1, 0, 2> zyxz; \
+Swizzle<Vector, Component, 2, 1, 1, 0> zyyx; \
+Swizzle<Vector, Component, 2, 1, 1, 1> zyyy; \
+Swizzle<Vector, Component, 2, 1, 1, 2> zyyz; \
+Swizzle<Vector, Component, 2, 1, 2, 0> zyzx; \
+Swizzle<Vector, Component, 2, 1, 2, 1> zyzy; \
+Swizzle<Vector, Component, 2, 1, 2, 2> zyzz; \
+Swizzle<Vector, Component, 2, 2, 0, 0> zzxx; \
+Swizzle<Vector, Component, 2, 2, 0, 1> zzxy; \
+Swizzle<Vector, Component, 2, 2, 0, 2> zzxz; \
+Swizzle<Vector, Component, 2, 2, 1, 0> zzyx; \
+Swizzle<Vector, Component, 2, 2, 1, 1> zzyy; \
+Swizzle<Vector, Component, 2, 2, 1, 2> zzyz; \
+Swizzle<Vector, Component, 2, 2, 2, 0> zzzx; \
+Swizzle<Vector, Component, 2, 2, 2, 1> zzzy; \
+Swizzle<Vector, Component, 2, 2, 2, 2> zzzz; 
+
+#define SWIZZLE_4      \
+Swizzle<Vector, Component, 0, 0> xx; \
+Swizzle<Vector, Component, 0, 1> xy; \
+Swizzle<Vector, Component, 0, 2> xz; \
+Swizzle<Vector, Component, 0, 3> xw; \
+Swizzle<Vector, Component, 1, 0> yx; \
+Swizzle<Vector, Component, 1, 1> yy; \
+Swizzle<Vector, Component, 1, 2> yz; \
+Swizzle<Vector, Component, 1, 3> yw; \
+Swizzle<Vector, Component, 2, 0> zx; \
+Swizzle<Vector, Component, 2, 1> zy; \
+Swizzle<Vector, Component, 2, 2> zz; \
+Swizzle<Vector, Component, 2, 3> zw; \
+Swizzle<Vector, Component, 3, 0> wx; \
+Swizzle<Vector, Component, 3, 1> wy; \
+Swizzle<Vector, Component, 3, 2> wz; \
+Swizzle<Vector, Component, 3, 3> ww; \
+Swizzle<Vector, Component, 0, 0, 0> xxx; \
+Swizzle<Vector, Component, 0, 0, 1> xxy; \
+Swizzle<Vector, Component, 0, 0, 2> xxz; \
+Swizzle<Vector, Component, 0, 0, 3> xxw; \
+Swizzle<Vector, Component, 0, 1, 0> xyx; \
+Swizzle<Vector, Component, 0, 1, 1> xyy; \
+Swizzle<Vector, Component, 0, 1, 2> xyz; \
+Swizzle<Vector, Component, 0, 1, 3> xyw; \
+Swizzle<Vector, Component, 0, 2, 0> xzx; \
+Swizzle<Vector, Component, 0, 2, 1> xzy; \
+Swizzle<Vector, Component, 0, 2, 2> xzz; \
+Swizzle<Vector, Component, 0, 2, 3> xzw; \
+Swizzle<Vector, Component, 0, 3, 0> xwx; \
+Swizzle<Vector, Component, 0, 3, 1> xwy; \
+Swizzle<Vector, Component, 0, 3, 2> xwz; \
+Swizzle<Vector, Component, 0, 3, 3> xww; \
+Swizzle<Vector, Component, 1, 0, 0> yxx; \
+Swizzle<Vector, Component, 1, 0, 1> yxy; \
+Swizzle<Vector, Component, 1, 0, 2> yxz; \
+Swizzle<Vector, Component, 1, 0, 3> yxw; \
+Swizzle<Vector, Component, 1, 1, 0> yyx; \
+Swizzle<Vector, Component, 1, 1, 1> yyy; \
+Swizzle<Vector, Component, 1, 1, 2> yyz; \
+Swizzle<Vector, Component, 1, 1, 3> yyw; \
+Swizzle<Vector, Component, 1, 2, 0> yzx; \
+Swizzle<Vector, Component, 1, 2, 1> yzy; \
+Swizzle<Vector, Component, 1, 2, 2> yzz; \
+Swizzle<Vector, Component, 1, 2, 3> yzw; \
+Swizzle<Vector, Component, 1, 3, 0> ywx; \
+Swizzle<Vector, Component, 1, 3, 1> ywy; \
+Swizzle<Vector, Component, 1, 3, 2> ywz; \
+Swizzle<Vector, Component, 1, 3, 3> yww; \
+Swizzle<Vector, Component, 2, 0, 0> zxx; \
+Swizzle<Vector, Component, 2, 0, 1> zxy; \
+Swizzle<Vector, Component, 2, 0, 2> zxz; \
+Swizzle<Vector, Component, 2, 0, 3> zxw; \
+Swizzle<Vector, Component, 2, 1, 0> zyx; \
+Swizzle<Vector, Component, 2, 1, 1> zyy; \
+Swizzle<Vector, Component, 2, 1, 2> zyz; \
+Swizzle<Vector, Component, 2, 1, 3> zyw; \
+Swizzle<Vector, Component, 2, 2, 0> zzx; \
+Swizzle<Vector, Component, 2, 2, 1> zzy; \
+Swizzle<Vector, Component, 2, 2, 2> zzz; \
+Swizzle<Vector, Component, 2, 2, 3> zzw; \
+Swizzle<Vector, Component, 2, 3, 0> zwx; \
+Swizzle<Vector, Component, 2, 3, 1> zwy; \
+Swizzle<Vector, Component, 2, 3, 2> zwz; \
+Swizzle<Vector, Component, 2, 3, 3> zww; \
+Swizzle<Vector, Component, 3, 0, 0> wxx; \
+Swizzle<Vector, Component, 3, 0, 1> wxy; \
+Swizzle<Vector, Component, 3, 0, 2> wxz; \
+Swizzle<Vector, Component, 3, 0, 3> wxw; \
+Swizzle<Vector, Component, 3, 1, 0> wyx; \
+Swizzle<Vector, Component, 3, 1, 1> wyy; \
+Swizzle<Vector, Component, 3, 1, 2> wyz; \
+Swizzle<Vector, Component, 3, 1, 3> wyw; \
+Swizzle<Vector, Component, 3, 2, 0> wzx; \
+Swizzle<Vector, Component, 3, 2, 1> wzy; \
+Swizzle<Vector, Component, 3, 2, 2> wzz; \
+Swizzle<Vector, Component, 3, 2, 3> wzw; \
+Swizzle<Vector, Component, 3, 3, 0> wwx; \
+Swizzle<Vector, Component, 3, 3, 1> wwy; \
+Swizzle<Vector, Component, 3, 3, 2> wwz; \
+Swizzle<Vector, Component, 3, 3, 3> www; \
+Swizzle<Vector, Component, 0, 0, 0, 0> xxxx; \
+Swizzle<Vector, Component, 0, 0, 0, 1> xxxy; \
+Swizzle<Vector, Component, 0, 0, 0, 2> xxxz; \
+Swizzle<Vector, Component, 0, 0, 0, 3> xxxw; \
+Swizzle<Vector, Component, 0, 0, 1, 0> xxyx; \
+Swizzle<Vector, Component, 0, 0, 1, 1> xxyy; \
+Swizzle<Vector, Component, 0, 0, 1, 2> xxyz; \
+Swizzle<Vector, Component, 0, 0, 1, 3> xxyw; \
+Swizzle<Vector, Component, 0, 0, 2, 0> xxzx; \
+Swizzle<Vector, Component, 0, 0, 2, 1> xxzy; \
+Swizzle<Vector, Component, 0, 0, 2, 2> xxzz; \
+Swizzle<Vector, Component, 0, 0, 2, 3> xxzw; \
+Swizzle<Vector, Component, 0, 0, 3, 0> xxwx; \
+Swizzle<Vector, Component, 0, 0, 3, 1> xxwy; \
+Swizzle<Vector, Component, 0, 0, 3, 2> xxwz; \
+Swizzle<Vector, Component, 0, 0, 3, 3> xxww; \
+Swizzle<Vector, Component, 0, 1, 0, 0> xyxx; \
+Swizzle<Vector, Component, 0, 1, 0, 1> xyxy; \
+Swizzle<Vector, Component, 0, 1, 0, 2> xyxz; \
+Swizzle<Vector, Component, 0, 1, 0, 3> xyxw; \
+Swizzle<Vector, Component, 0, 1, 1, 0> xyyx; \
+Swizzle<Vector, Component, 0, 1, 1, 1> xyyy; \
+Swizzle<Vector, Component, 0, 1, 1, 2> xyyz; \
+Swizzle<Vector, Component, 0, 1, 1, 3> xyyw; \
+Swizzle<Vector, Component, 0, 1, 2, 0> xyzx; \
+Swizzle<Vector, Component, 0, 1, 2, 1> xyzy; \
+Swizzle<Vector, Component, 0, 1, 2, 2> xyzz; \
+Swizzle<Vector, Component, 0, 1, 2, 3> xyzw; \
+Swizzle<Vector, Component, 0, 1, 3, 0> xywx; \
+Swizzle<Vector, Component, 0, 1, 3, 1> xywy; \
+Swizzle<Vector, Component, 0, 1, 3, 2> xywz; \
+Swizzle<Vector, Component, 0, 1, 3, 3> xyww; \
+Swizzle<Vector, Component, 0, 2, 0, 0> xzxx; \
+Swizzle<Vector, Component, 0, 2, 0, 1> xzxy; \
+Swizzle<Vector, Component, 0, 2, 0, 2> xzxz; \
+Swizzle<Vector, Component, 0, 2, 0, 3> xzxw; \
+Swizzle<Vector, Component, 0, 2, 1, 0> xzyx; \
+Swizzle<Vector, Component, 0, 2, 1, 1> xzyy; \
+Swizzle<Vector, Component, 0, 2, 1, 2> xzyz; \
+Swizzle<Vector, Component, 0, 2, 1, 3> xzyw; \
+Swizzle<Vector, Component, 0, 2, 2, 0> xzzx; \
+Swizzle<Vector, Component, 0, 2, 2, 1> xzzy; \
+Swizzle<Vector, Component, 0, 2, 2, 2> xzzz; \
+Swizzle<Vector, Component, 0, 2, 2, 3> xzzw; \
+Swizzle<Vector, Component, 0, 2, 3, 0> xzwx; \
+Swizzle<Vector, Component, 0, 2, 3, 1> xzwy; \
+Swizzle<Vector, Component, 0, 2, 3, 2> xzwz; \
+Swizzle<Vector, Component, 0, 2, 3, 3> xzww; \
+Swizzle<Vector, Component, 0, 3, 0, 0> xwxx; \
+Swizzle<Vector, Component, 0, 3, 0, 1> xwxy; \
+Swizzle<Vector, Component, 0, 3, 0, 2> xwxz; \
+Swizzle<Vector, Component, 0, 3, 0, 3> xwxw; \
+Swizzle<Vector, Component, 0, 3, 1, 0> xwyx; \
+Swizzle<Vector, Component, 0, 3, 1, 1> xwyy; \
+Swizzle<Vector, Component, 0, 3, 1, 2> xwyz; \
+Swizzle<Vector, Component, 0, 3, 1, 3> xwyw; \
+Swizzle<Vector, Component, 0, 3, 2, 0> xwzx; \
+Swizzle<Vector, Component, 0, 3, 2, 1> xwzy; \
+Swizzle<Vector, Component, 0, 3, 2, 2> xwzz; \
+Swizzle<Vector, Component, 0, 3, 2, 3> xwzw; \
+Swizzle<Vector, Component, 0, 3, 3, 0> xwwx; \
+Swizzle<Vector, Component, 0, 3, 3, 1> xwwy; \
+Swizzle<Vector, Component, 0, 3, 3, 2> xwwz; \
+Swizzle<Vector, Component, 0, 3, 3, 3> xwww; \
+Swizzle<Vector, Component, 1, 0, 0, 0> yxxx; \
+Swizzle<Vector, Component, 1, 0, 0, 1> yxxy; \
+Swizzle<Vector, Component, 1, 0, 0, 2> yxxz; \
+Swizzle<Vector, Component, 1, 0, 0, 3> yxxw; \
+Swizzle<Vector, Component, 1, 0, 1, 0> yxyx; \
+Swizzle<Vector, Component, 1, 0, 1, 1> yxyy; \
+Swizzle<Vector, Component, 1, 0, 1, 2> yxyz; \
+Swizzle<Vector, Component, 1, 0, 1, 3> yxyw; \
+Swizzle<Vector, Component, 1, 0, 2, 0> yxzx; \
+Swizzle<Vector, Component, 1, 0, 2, 1> yxzy; \
+Swizzle<Vector, Component, 1, 0, 2, 2> yxzz; \
+Swizzle<Vector, Component, 1, 0, 2, 3> yxzw; \
+Swizzle<Vector, Component, 1, 0, 3, 0> yxwx; \
+Swizzle<Vector, Component, 1, 0, 3, 1> yxwy; \
+Swizzle<Vector, Component, 1, 0, 3, 2> yxwz; \
+Swizzle<Vector, Component, 1, 0, 3, 3> yxww; \
+Swizzle<Vector, Component, 1, 1, 0, 0> yyxx; \
+Swizzle<Vector, Component, 1, 1, 0, 1> yyxy; \
+Swizzle<Vector, Component, 1, 1, 0, 2> yyxz; \
+Swizzle<Vector, Component, 1, 1, 0, 3> yyxw; \
+Swizzle<Vector, Component, 1, 1, 1, 0> yyyx; \
+Swizzle<Vector, Component, 1, 1, 1, 1> yyyy; \
+Swizzle<Vector, Component, 1, 1, 1, 2> yyyz; \
+Swizzle<Vector, Component, 1, 1, 1, 3> yyyw; \
+Swizzle<Vector, Component, 1, 1, 2, 0> yyzx; \
+Swizzle<Vector, Component, 1, 1, 2, 1> yyzy; \
+Swizzle<Vector, Component, 1, 1, 2, 2> yyzz; \
+Swizzle<Vector, Component, 1, 1, 2, 3> yyzw; \
+Swizzle<Vector, Component, 1, 1, 3, 0> yywx; \
+Swizzle<Vector, Component, 1, 1, 3, 1> yywy; \
+Swizzle<Vector, Component, 1, 1, 3, 2> yywz; \
+Swizzle<Vector, Component, 1, 1, 3, 3> yyww; \
+Swizzle<Vector, Component, 1, 2, 0, 0> yzxx; \
+Swizzle<Vector, Component, 1, 2, 0, 1> yzxy; \
+Swizzle<Vector, Component, 1, 2, 0, 2> yzxz; \
+Swizzle<Vector, Component, 1, 2, 0, 3> yzxw; \
+Swizzle<Vector, Component, 1, 2, 1, 0> yzyx; \
+Swizzle<Vector, Component, 1, 2, 1, 1> yzyy; \
+Swizzle<Vector, Component, 1, 2, 1, 2> yzyz; \
+Swizzle<Vector, Component, 1, 2, 1, 3> yzyw; \
+Swizzle<Vector, Component, 1, 2, 2, 0> yzzx; \
+Swizzle<Vector, Component, 1, 2, 2, 1> yzzy; \
+Swizzle<Vector, Component, 1, 2, 2, 2> yzzz; \
+Swizzle<Vector, Component, 1, 2, 2, 3> yzzw; \
+Swizzle<Vector, Component, 1, 2, 3, 0> yzwx; \
+Swizzle<Vector, Component, 1, 2, 3, 1> yzwy; \
+Swizzle<Vector, Component, 1, 2, 3, 2> yzwz; \
+Swizzle<Vector, Component, 1, 2, 3, 3> yzww; \
+Swizzle<Vector, Component, 1, 3, 0, 0> ywxx; \
+Swizzle<Vector, Component, 1, 3, 0, 1> ywxy; \
+Swizzle<Vector, Component, 1, 3, 0, 2> ywxz; \
+Swizzle<Vector, Component, 1, 3, 0, 3> ywxw; \
+Swizzle<Vector, Component, 1, 3, 1, 0> ywyx; \
+Swizzle<Vector, Component, 1, 3, 1, 1> ywyy; \
+Swizzle<Vector, Component, 1, 3, 1, 2> ywyz; \
+Swizzle<Vector, Component, 1, 3, 1, 3> ywyw; \
+Swizzle<Vector, Component, 1, 3, 2, 0> ywzx; \
+Swizzle<Vector, Component, 1, 3, 2, 1> ywzy; \
+Swizzle<Vector, Component, 1, 3, 2, 2> ywzz; \
+Swizzle<Vector, Component, 1, 3, 2, 3> ywzw; \
+Swizzle<Vector, Component, 1, 3, 3, 0> ywwx; \
+Swizzle<Vector, Component, 1, 3, 3, 1> ywwy; \
+Swizzle<Vector, Component, 1, 3, 3, 2> ywwz; \
+Swizzle<Vector, Component, 1, 3, 3, 3> ywww; \
+Swizzle<Vector, Component, 2, 0, 0, 0> zxxx; \
+Swizzle<Vector, Component, 2, 0, 0, 1> zxxy; \
+Swizzle<Vector, Component, 2, 0, 0, 2> zxxz; \
+Swizzle<Vector, Component, 2, 0, 0, 3> zxxw; \
+Swizzle<Vector, Component, 2, 0, 1, 0> zxyx; \
+Swizzle<Vector, Component, 2, 0, 1, 1> zxyy; \
+Swizzle<Vector, Component, 2, 0, 1, 2> zxyz; \
+Swizzle<Vector, Component, 2, 0, 1, 3> zxyw; \
+Swizzle<Vector, Component, 2, 0, 2, 0> zxzx; \
+Swizzle<Vector, Component, 2, 0, 2, 1> zxzy; \
+Swizzle<Vector, Component, 2, 0, 2, 2> zxzz; \
+Swizzle<Vector, Component, 2, 0, 2, 3> zxzw; \
+Swizzle<Vector, Component, 2, 0, 3, 0> zxwx; \
+Swizzle<Vector, Component, 2, 0, 3, 1> zxwy; \
+Swizzle<Vector, Component, 2, 0, 3, 2> zxwz; \
+Swizzle<Vector, Component, 2, 0, 3, 3> zxww; \
+Swizzle<Vector, Component, 2, 1, 0, 0> zyxx; \
+Swizzle<Vector, Component, 2, 1, 0, 1> zyxy; \
+Swizzle<Vector, Component, 2, 1, 0, 2> zyxz; \
+Swizzle<Vector, Component, 2, 1, 0, 3> zyxw; \
+Swizzle<Vector, Component, 2, 1, 1, 0> zyyx; \
+Swizzle<Vector, Component, 2, 1, 1, 1> zyyy; \
+Swizzle<Vector, Component, 2, 1, 1, 2> zyyz; \
+Swizzle<Vector, Component, 2, 1, 1, 3> zyyw; \
+Swizzle<Vector, Component, 2, 1, 2, 0> zyzx; \
+Swizzle<Vector, Component, 2, 1, 2, 1> zyzy; \
+Swizzle<Vector, Component, 2, 1, 2, 2> zyzz; \
+Swizzle<Vector, Component, 2, 1, 2, 3> zyzw; \
+Swizzle<Vector, Component, 2, 1, 3, 0> zywx; \
+Swizzle<Vector, Component, 2, 1, 3, 1> zywy; \
+Swizzle<Vector, Component, 2, 1, 3, 2> zywz; \
+Swizzle<Vector, Component, 2, 1, 3, 3> zyww; \
+Swizzle<Vector, Component, 2, 2, 0, 0> zzxx; \
+Swizzle<Vector, Component, 2, 2, 0, 1> zzxy; \
+Swizzle<Vector, Component, 2, 2, 0, 2> zzxz; \
+Swizzle<Vector, Component, 2, 2, 0, 3> zzxw; \
+Swizzle<Vector, Component, 2, 2, 1, 0> zzyx; \
+Swizzle<Vector, Component, 2, 2, 1, 1> zzyy; \
+Swizzle<Vector, Component, 2, 2, 1, 2> zzyz; \
+Swizzle<Vector, Component, 2, 2, 1, 3> zzyw; \
+Swizzle<Vector, Component, 2, 2, 2, 0> zzzx; \
+Swizzle<Vector, Component, 2, 2, 2, 1> zzzy; \
+Swizzle<Vector, Component, 2, 2, 2, 2> zzzz; \
+Swizzle<Vector, Component, 2, 2, 2, 3> zzzw; \
+Swizzle<Vector, Component, 2, 2, 3, 0> zzwx; \
+Swizzle<Vector, Component, 2, 2, 3, 1> zzwy; \
+Swizzle<Vector, Component, 2, 2, 3, 2> zzwz; \
+Swizzle<Vector, Component, 2, 2, 3, 3> zzww; \
+Swizzle<Vector, Component, 2, 3, 0, 0> zwxx; \
+Swizzle<Vector, Component, 2, 3, 0, 1> zwxy; \
+Swizzle<Vector, Component, 2, 3, 0, 2> zwxz; \
+Swizzle<Vector, Component, 2, 3, 0, 3> zwxw; \
+Swizzle<Vector, Component, 2, 3, 1, 0> zwyx; \
+Swizzle<Vector, Component, 2, 3, 1, 1> zwyy; \
+Swizzle<Vector, Component, 2, 3, 1, 2> zwyz; \
+Swizzle<Vector, Component, 2, 3, 1, 3> zwyw; \
+Swizzle<Vector, Component, 2, 3, 2, 0> zwzx; \
+Swizzle<Vector, Component, 2, 3, 2, 1> zwzy; \
+Swizzle<Vector, Component, 2, 3, 2, 2> zwzz; \
+Swizzle<Vector, Component, 2, 3, 2, 3> zwzw; \
+Swizzle<Vector, Component, 2, 3, 3, 0> zwwx; \
+Swizzle<Vector, Component, 2, 3, 3, 1> zwwy; \
+Swizzle<Vector, Component, 2, 3, 3, 2> zwwz; \
+Swizzle<Vector, Component, 2, 3, 3, 3> zwww; \
+Swizzle<Vector, Component, 3, 0, 0, 0> wxxx; \
+Swizzle<Vector, Component, 3, 0, 0, 1> wxxy; \
+Swizzle<Vector, Component, 3, 0, 0, 2> wxxz; \
+Swizzle<Vector, Component, 3, 0, 0, 3> wxxw; \
+Swizzle<Vector, Component, 3, 0, 1, 0> wxyx; \
+Swizzle<Vector, Component, 3, 0, 1, 1> wxyy; \
+Swizzle<Vector, Component, 3, 0, 1, 2> wxyz; \
+Swizzle<Vector, Component, 3, 0, 1, 3> wxyw; \
+Swizzle<Vector, Component, 3, 0, 2, 0> wxzx; \
+Swizzle<Vector, Component, 3, 0, 2, 1> wxzy; \
+Swizzle<Vector, Component, 3, 0, 2, 2> wxzz; \
+Swizzle<Vector, Component, 3, 0, 2, 3> wxzw; \
+Swizzle<Vector, Component, 3, 0, 3, 0> wxwx; \
+Swizzle<Vector, Component, 3, 0, 3, 1> wxwy; \
+Swizzle<Vector, Component, 3, 0, 3, 2> wxwz; \
+Swizzle<Vector, Component, 3, 0, 3, 3> wxww; \
+Swizzle<Vector, Component, 3, 1, 0, 0> wyxx; \
+Swizzle<Vector, Component, 3, 1, 0, 1> wyxy; \
+Swizzle<Vector, Component, 3, 1, 0, 2> wyxz; \
+Swizzle<Vector, Component, 3, 1, 0, 3> wyxw; \
+Swizzle<Vector, Component, 3, 1, 1, 0> wyyx; \
+Swizzle<Vector, Component, 3, 1, 1, 1> wyyy; \
+Swizzle<Vector, Component, 3, 1, 1, 2> wyyz; \
+Swizzle<Vector, Component, 3, 1, 1, 3> wyyw; \
+Swizzle<Vector, Component, 3, 1, 2, 0> wyzx; \
+Swizzle<Vector, Component, 3, 1, 2, 1> wyzy; \
+Swizzle<Vector, Component, 3, 1, 2, 2> wyzz; \
+Swizzle<Vector, Component, 3, 1, 2, 3> wyzw; \
+Swizzle<Vector, Component, 3, 1, 3, 0> wywx; \
+Swizzle<Vector, Component, 3, 1, 3, 1> wywy; \
+Swizzle<Vector, Component, 3, 1, 3, 2> wywz; \
+Swizzle<Vector, Component, 3, 1, 3, 3> wyww; \
+Swizzle<Vector, Component, 3, 2, 0, 0> wzxx; \
+Swizzle<Vector, Component, 3, 2, 0, 1> wzxy; \
+Swizzle<Vector, Component, 3, 2, 0, 2> wzxz; \
+Swizzle<Vector, Component, 3, 2, 0, 3> wzxw; \
+Swizzle<Vector, Component, 3, 2, 1, 0> wzyx; \
+Swizzle<Vector, Component, 3, 2, 1, 1> wzyy; \
+Swizzle<Vector, Component, 3, 2, 1, 2> wzyz; \
+Swizzle<Vector, Component, 3, 2, 1, 3> wzyw; \
+Swizzle<Vector, Component, 3, 2, 2, 0> wzzx; \
+Swizzle<Vector, Component, 3, 2, 2, 1> wzzy; \
+Swizzle<Vector, Component, 3, 2, 2, 2> wzzz; \
+Swizzle<Vector, Component, 3, 2, 2, 3> wzzw; \
+Swizzle<Vector, Component, 3, 2, 3, 0> wzwx; \
+Swizzle<Vector, Component, 3, 2, 3, 1> wzwy; \
+Swizzle<Vector, Component, 3, 2, 3, 2> wzwz; \
+Swizzle<Vector, Component, 3, 2, 3, 3> wzww; \
+Swizzle<Vector, Component, 3, 3, 0, 0> wwxx; \
+Swizzle<Vector, Component, 3, 3, 0, 1> wwxy; \
+Swizzle<Vector, Component, 3, 3, 0, 2> wwxz; \
+Swizzle<Vector, Component, 3, 3, 0, 3> wwxw; \
+Swizzle<Vector, Component, 3, 3, 1, 0> wwyx; \
+Swizzle<Vector, Component, 3, 3, 1, 1> wwyy; \
+Swizzle<Vector, Component, 3, 3, 1, 2> wwyz; \
+Swizzle<Vector, Component, 3, 3, 1, 3> wwyw; \
+Swizzle<Vector, Component, 3, 3, 2, 0> wwzx; \
+Swizzle<Vector, Component, 3, 3, 2, 1> wwzy; \
+Swizzle<Vector, Component, 3, 3, 2, 2> wwzz; \
+Swizzle<Vector, Component, 3, 3, 2, 3> wwzw; \
+Swizzle<Vector, Component, 3, 3, 3, 0> wwwx; \
+Swizzle<Vector, Component, 3, 3, 3, 1> wwwy; \
+Swizzle<Vector, Component, 3, 3, 3, 2> wwwz; \
+Swizzle<Vector, Component, 3, 3, 3, 3> wwww; 
