@@ -8,7 +8,7 @@ TMATH_NAMESPACE
                                 }\
                                 return *(Container*)this;
 
-#define RETURN_ELEMENTS(block)  Container ret;\
+#define RETURN_ELEMENTS(block)  Container<Component, sizeof...(Indices)> ret;\
                                 size_t indices[] = { Indices ... };\
                                 for (size_t i = 0; i < sizeof...(Indices); i++)\
                                 {\
@@ -18,138 +18,138 @@ TMATH_NAMESPACE
                                 return ret;
 
 
-template<typename Container, typename Component, size_t ...Indices>
+template<template<typename, size_t> class Container, typename Component, size_t ...Indices>
 class Swizzle
 {
 private:
 	Component data[sizeof...(Indices)];
 
 public:
-	Container& operator=(const Container& rhs)
+	Container<Component, sizeof...(Indices)>& operator=(const Container<Component, sizeof...(Indices)>& rhs)
 	{
 		size_t indices[] = { Indices ... };
 		for (size_t i = 0; i < sizeof...(Indices); i++) { data[indices[i]] = rhs[i]; }
-		return *(Container*)this;
+		return *(Container<Component, sizeof...(Indices)>*)this;
 	}
 
-	operator Container() const
+	operator Container<Component, sizeof...(Indices)>() const
 	{
-		return Container(data[Indices]...);
+		return Container<Component, sizeof...(Indices)>(data[Indices]...);
 	}
 
-	Container operator- () const
+	Container<Component, sizeof...(Indices)> operator- () const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = -data[index];
 		);
 	}
 
-	Container operator+ (const Container& rhs) const
+	Container<Component, sizeof...(Indices)> operator+ (const Container<Component, sizeof...(Indices)>& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] + rhs[i];
 		);
 	}
 
-	Container operator- (const Container& rhs) const
+	Container<Component, sizeof...(Indices)> operator- (const Container<Component, sizeof...(Indices)>& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] - rhs[i];
 		);
 	}
 
-	Container operator* (const Container& rhs) const
+	Container<Component, sizeof...(Indices)> operator* (const Container<Component, sizeof...(Indices)>& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] * rhs[i];
 		);
 	}
 
-	Container operator/ (const Container& rhs) const
+	Container<Component, sizeof...(Indices)> operator/ (const Container<Component, sizeof...(Indices)>& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] / rhs[i];
 		);
 	}
 
-	Container& operator+= (const Container& rhs)
+	Container<Component, sizeof...(Indices)>& operator+= (const Container<Component, sizeof...(Indices)>& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] += rhs[i];
 		);
 	}
 
-	Container& operator-= (const Container& rhs)
+	Container<Component, sizeof...(Indices)>& operator-= (const Container<Component, sizeof...(Indices)>& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] -= rhs[i];
 		);
 	}
 
-	Container& operator*= (const Container& rhs)
+	Container<Component, sizeof...(Indices)>& operator*= (const Container<Component, sizeof...(Indices)>& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] *= rhs[i];
 		);
 	}
 
-	Container& operator/= (const Container& rhs)
+	Container<Component, sizeof...(Indices)>& operator/= (const Container<Component, sizeof...(Indices)>& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] /= rhs[i];
 		);
 	}
 
-	Container operator+ (const Component& rhs) const
+	Container<Component, sizeof...(Indices)> operator+ (const Component& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] + rhs;
 		);
 	}
 
-	Container operator- (const Component& rhs) const
+	Container<Component, sizeof...(Indices)> operator- (const Component& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] - rhs;
 		);
 	}
 
-	Container operator* (const Component& rhs) const
+	Container<Component, sizeof...(Indices)> operator* (const Component& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] * rhs;
 		);
 	}
 
-	Container operator/ (const Component& rhs) const
+	Container<Component, sizeof...(Indices)> operator/ (const Component& rhs) const
 	{
 		RETURN_ELEMENTS(
 			ret[i] = data[index] / rhs;
 		);
 	}
 
-	Container& operator+= (const Component& rhs)
+	Container<Component, sizeof...(Indices)>& operator+= (const Component& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] += rhs;
 		);
 	}
 
-	Container& operator-= (const Component& rhs)
+	Container<Component, sizeof...(Indices)>& operator-= (const Component& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] -= rhs;
 		);
 	}
 
-	Container& operator*= (const Component& rhs)
+	Container<Component, sizeof...(Indices)>& operator*= (const Component& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] *= rhs;
 		);
 	}
 
-	Container& operator/= (const Component& rhs)
+	Container<Component, sizeof...(Indices)>& operator/= (const Component& rhs)
 	{
 		MODIFY_ELEMENTS(
 			data[index] /= rhs;
@@ -351,6 +351,9 @@ Vector<Component, N> operator/=(Vector<Component, N>& lhs, const Component& rhs)
 #pragma warning(disable: 4201)
 #endif
 
+template <typename Component, size_t N>
+using SwizzleContainer = Vector<Component, N>;
+
 template <typename Component>
 struct Vector<Component, 2>
 {
@@ -358,6 +361,7 @@ struct Vector<Component, 2>
 	{
 		Component data[2];
 		struct { Component x, y; };
+
 		SWIZZLE_2;
 	};
 
@@ -377,6 +381,7 @@ struct Vector<Component, 3>
 	{
 		Component data[3];
 		struct { Component x, y, z; };
+
 		SWIZZLE_3;
 	};
 
@@ -396,6 +401,7 @@ struct Vector<Component, 4>
 	{
 		Component data[4];
 		struct { Component x, y, z, w; };
+
 		SWIZZLE_4;
 	};
 
