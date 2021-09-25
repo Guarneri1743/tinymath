@@ -22,7 +22,7 @@ function setupSlotion()
       warnings "Extra"
       floatingpoint "Fast"
       symbols "On"
-      cppdialect "C++98"
+      cppdialect "C++14"
       rtti "Off"
       characterset ("MBCS")
 
