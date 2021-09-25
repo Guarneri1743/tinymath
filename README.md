@@ -1,5 +1,5 @@
-# TinyMath
- A small math library written in C++14
+# TinyMath (WIP)
+ A small math library written in C++14 
 
 
 # Usage
