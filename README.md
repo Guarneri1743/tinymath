@@ -25,15 +25,21 @@ Swizzling
 
 Matrix operations
 	
-	Matrix4x4 m1(1, -2, 3, 4,
-				 1, 3, 0, 1,
-				 1, -1, 2, 2,
-				 0, 0, 0, 1);
+	Matrix4x4 m1
+	(
+	1, -2, 3, 4,
+	1, 3, 0, 1,
+	1, -1, 2, 2,
+	0, 0, 0, 1
+	);
 	
-	Matrix4x4 m2(1, -2, 3, 4,
-				 1, 3, 0, 1,
-				 1, -1, 2, 2,
-				 0, 0, 0, 1);
+	Matrix4x4 m2
+	(
+	1, -2, 3, 4,
+	1, 3, 0, 1,
+	1, -1, 2, 2,
+	0, 0, 0, 1
+	);
 
 	Matrix4x4 mul = m1 * m2;
 	Matrix4x4 add = m1 + m2;
@@ -53,10 +59,13 @@ Inverse
 	
 Translation
 
-	Matrix4x4 translation = Matrix4x4(1, 0, 0, 1.5,
-									  0, 1, 0, 2.7,
-									  0, 0, 1, 3,
-									  0, 0, 0, 1);
+	Matrix4x4 translation = Matrix4x4
+	(
+	1, 0, 0, 1.5,
+	0, 1, 0, 2.7,
+	0, 0, 1, 3,
+	0, 0, 0, 1
+	);
 	
 	Vec4f vec = Vec4f(0.2f, 7.5f, 123.f, 1.0f);
 	auto translated = translation * vec;
@@ -64,10 +73,13 @@ Translation
 Rotation
 	
 	float rad = DEGREE2RAD(90);
-	Matrix4x4 rotation = Matrix4x4(TMath::cos(rad), 0, -TMath::sin(rad), 0,
-								   0, 1, 0, 0,
-								   TMath::sin(rad), 0, TMath::cos(rad), 0,
-								   0, 0, 0, 1);
+	Matrix4x4 rotation = Matrix4x4
+	(
+	TMath::cos(rad), 0, -TMath::sin(rad), 0,
+	0, 1, 0, 0,
+	TMath::sin(rad), 0, TMath::cos(rad), 0,
+	0, 0, 0, 1
+	);
 	
 	Vec4f vec = Vec4f(1.0f, 1.0f, 1.0f, 1.0f);
 	auto rotated = rotation * vec;
@@ -75,10 +87,13 @@ Rotation
 	
 Scaling
 
-	Matrix4x4 scale = Matrix4x4(2, 0, 0, 0,
-								0, 3, 0, 0,
-								0, 0, 4, 0,
-								0, 0, 0, 1);
+	Matrix4x4 scale = Matrix4x4
+	(
+	2, 0, 0, 0,
+	0, 3, 0, 0,
+	0, 0, 4, 0,
+	0, 0, 0, 1
+	);
 	
 	Vec4f vec = Vec4f(1.0f, 1.0f, 1.0f, 1.0f);
 	auto scaled = scale * vec;
