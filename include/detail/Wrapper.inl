@@ -23,17 +23,17 @@ T abs(const T& val)
 
 float sqrt(const float& x)
 {
-	constexpr float kMagicNum = 0x5f3759df;
-	const float xhalf = 0.5f * x;
-	union // get bits for floating value
-	{
-		float x;
-		int i;
-	} u;
-	u.x = x;
-	u.i = (int)kMagicNum - (u.i >> 1);  // gives initial guess y0
-	return x * u.x * (1.5f - xhalf * u.x * u.x);// Newton step, repeating increases accuracy 
-	
+	//constexpr float kMagicNum = 0x5f3759df;
+	//const float xhalf = 0.5f * x;
+	//union // get bits for floating value
+	//{
+	//	float x;
+	//	int i;
+	//} u;
+	//u.x = x;
+	//u.i = (int)kMagicNum - (u.i >> 1);  // gives initial guess y0
+	//return x * u.x * (1.5f - xhalf * u.x * u.x);// Newton step, repeating increases accuracy 
+	return std::sqrt(x);
 }
 
 template<typename T>

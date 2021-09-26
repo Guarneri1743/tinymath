@@ -414,6 +414,30 @@ struct Vector<Component, 4>
 	const Component& operator[](const size_t& index) const { return data[index]; }
 };
 
+constexpr Vector<float, 2> kVec2fZero = Vector<float, 2>(0.f);
+constexpr Vector<float, 2> kVec2fOne = Vector<float, 2>(1.f);
+constexpr Vector<int, 2> kVec2iZero = Vector<int, 2>(0);
+constexpr Vector<int, 2> kVec2iOne = Vector<int, 2>(1);
+constexpr Vector<float, 3> kVec3fZero = Vector<float, 3>(0.f);
+constexpr Vector<float, 3> kVec3fOne = Vector<float, 3>(1.f);
+constexpr Vector<float, 3> kVec3fUp = Vector<float, 3>(0.f, 1.f, 0.f);
+constexpr Vector<float, 3> kVec3fDown = Vector<float, 3>(0.f, -1.f, 0.f);
+constexpr Vector<float, 3> kVec3fLeft = Vector<float, 3>(-1.f, 0.f, 0.f);
+constexpr Vector<float, 3> kVec3fRight = Vector<float, 3>(1.f, 0.f, 0.f);
+constexpr Vector<float, 3> kVec3fForward = Vector<float, 3>(0.f, 0.f, 1.f);
+constexpr Vector<float, 3> kVec3fBack = Vector<float, 3>(0.f, 0.f, -1.f);
+constexpr Vector<int, 3> kVec3iZero = Vector<int, 3>(0);
+constexpr Vector<int, 3> kVec3iOne = Vector<int, 3>(1);
+constexpr Vector<int, 3> kVec3iUp = Vector<int, 3>(0, 1, 0);
+constexpr Vector<int, 3> kVec3iDown = Vector<int, 3>(0, -1, 0);
+constexpr Vector<int, 3> kVec3iLeft = Vector<int, 3>(-1, 0, 0);
+constexpr Vector<int, 3> kVec3iRight = Vector<int, 3>(1, 0, 0);
+constexpr Vector<int, 3> kVec3iForward = Vector<int, 3>(0, 0, 1);
+constexpr Vector<int, 3> kVec3iBack = Vector<int, 3>(0, 0, -1);
+constexpr Vector<float, 4> kVec4fZero = Vector<float, 4>(0.f);
+constexpr Vector<float, 4> kVec4fOne = Vector<float, 4>(1.f);
+constexpr Vector<int, 4> kVec4iZero = Vector<int, 4>(0);
+constexpr Vector<int, 4> kVec4iOne = Vector<int, 4>(1);
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif

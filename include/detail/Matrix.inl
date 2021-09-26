@@ -2,6 +2,109 @@ TMATH_NAMESPACE
 
 #define rc2index(row, col, COL) row * COL + col
 
+template<typename Component, size_t ROW, size_t COL>
+bool operator!=(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
+{
+	for (size_t idx = 0; idx < ROW * COL; ++idx) { if (lhs[idx] != rhs[idx]) return true; } return false;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+bool operator==(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
+{
+	for (size_t idx = 0; idx < ROW * COL; ++idx) { if (lhs[idx] != rhs[idx]) return false; } return true;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+Matrix<Component, ROW, COL> operator-(const Matrix<Component, ROW, COL>& v)
+{
+	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
+
+	for (size_t r = 0; r < ROW; ++r)
+	{
+		for (size_t c = 0; c < COL; ++c)
+		{
+			ret.at(r, c) = -v.at(r, c);
+		}
+	}
+
+	return ret;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+Matrix<Component, ROW, COL> operator+(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
+{
+	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
+
+	for (size_t r = 0; r < ROW; ++r)
+	{
+		for (size_t c = 0; c < COL; ++c)
+		{
+			ret.at(r, c) = lhs.at(r, c) + rhs.at(r, c);
+		}
+	}
+
+	return ret;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+Matrix<Component, ROW, COL> operator-(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
+{
+	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
+
+	for (size_t r = 0; r < ROW; ++r)
+	{
+		for (size_t c = 0; c < COL; ++c)
+		{
+			ret.at(r, c) = lhs.at(r, c) - rhs.at(r, c);
+		}
+	}
+
+	return ret;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+Matrix<Component, ROW, COL> transpose(const Matrix<Component, ROW, COL>& m)
+{
+	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
+
+	for (size_t r = 0; r < ROW; ++r)
+	{
+		for (size_t c = 0; c < COL; ++c)
+		{
+			ret.at(c, r) = m.at(r, c);
+		}
+	}
+
+	return ret;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+TMATH_INLINE bool approx(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
+{
+	for (size_t idx = 0; idx < ROW * COL; ++idx) { if (abs(lhs[idx] - rhs[idx]) > EPSILON) return false; } return true;
+}
+
+template<typename Component, size_t N>
+Matrix<Component, N, N> create_identity()
+{
+	Matrix<Component, N, N> ret = Matrix<Component, N, N>((Component)0);
+
+	for (size_t r = 0; r < N; ++r)
+	{
+		ret.at(r, r) = (Component)1;
+	}
+
+	return ret;
+}
+
+template<typename Component, size_t ROW, size_t COL>
+bool is_rotation_matrix(const Matrix<Component, ROW, COL>& m)
+{
+	Matrix<Component, ROW, COL> t = transpose(m);
+	Matrix<Component, ROW, COL> multiply = m * t;
+	return approx(multiply, create_identity<Component, ROW>());
+}
+
 // suppress c4201
 #if defined(_MSC_VER)
 #pragma warning(push)
@@ -60,6 +163,71 @@ struct Matrix<Component, 3, 3>
 
 	Component& at(const size_t& r, const size_t& c) { return data[rc2index(r, c, 3)]; }
 	const Component& at(const size_t& r, const size_t& c) const { return data[rc2index(r, c, 3)]; }
+
+	Vector<Component, 3> forward() const
+	{
+		Vector<Component, 3> f;
+		f.x = at(2, 0);
+		f.y = at(2, 1);
+		f.z = at(2, 2);
+		return normaliz(f);
+	}
+
+	Vector<Component, 3> up() const
+	{
+		Vector<Component, 3> u;
+		u.x = at(1, 0);
+		u.y = at(1, 1);
+		u.z = at(1, 2);
+		return normaliz(u);
+	}
+
+	Vector<Component, 3> right() const
+	{
+		Vector<Component, 3> r;
+		r.x = at(0, 0);
+		r.y = at(0, 1);
+		r.z = at(0, 2);
+		return normaliz(u);
+	}
+
+	Vector<Component, 3> row(const int& index) const
+	{
+		assert(index >= 0 && index <= 2);
+		Vector<Component, 3> ret;
+		switch (index)
+		{
+		case 0:
+			ret = Vector<Component, 3>(m00, m01, m02);
+			break;
+		case 1:
+			ret = Vector<Component, 3>(m10, m11, m12);
+			break;
+		case 2:
+			ret = Vector<Component, 3>(m20, m21, m22);
+			break;
+		}
+		return ret;
+	}
+
+	Vector<Component, 3> column(const int& index) const
+	{
+		assert(index >= 0 && index <= 2);
+		Vector<Component, 3> ret;
+		switch (index)
+		{
+		case 0:
+			ret = Vector<Component, 3>(m00, m10, m20);
+			break;
+		case 1:
+			ret = Vector<Component, 3>(m01, m11, m21);
+			break;
+		case 2:
+			ret = Vector<Component, 3>(m02, m12, m22);
+			break;
+		}
+		return ret;
+	}
 };
 
 template <typename Component>
@@ -127,70 +295,152 @@ struct Matrix<Component, 4, 4>
 
 	Component& at(const size_t& r, const size_t& c) { return data[rc2index(r, c, 4)]; }
 	const Component& at(const size_t& r, const size_t& c) const { return data[rc2index(r, c, 4)]; }
+
+	Vector<Component, 3> forward() const
+	{
+		Vector<Component, 3> f;
+		f.x = at(2, 0);
+		f.y = at(2, 1);
+		f.z = at(2, 2);
+		return normaliz(f);
+	}
+
+	Vector<Component, 3> up() const
+	{
+		Vector<Component, 3> u;
+		u.x = at(1, 0);
+		u.y = at(1, 1);
+		u.z = at(1, 2);
+		return normaliz(u);
+	}
+
+	Vector<Component, 3> right() const
+	{
+		Vector<Component, 3> r;
+		r.x = at(0, 0);
+		r.y = at(0, 1);
+		r.z = at(0, 2);
+		return normaliz(u);
+	}
+
+	Vector<Component, 3> position() const
+	{
+		Vector<Component, 3> pos;
+		pos.x = at(0, 3);
+		pos.y = at(1, 3);
+		pos.z = at(2, 3);
+		return pos;
+	}
+
+	Vector<Component, 3> get_scale() const
+	{
+		Vector<Component, 3> s;
+		s.x = magnitude(Vector<Component, 4>(m00, m01, m02, m03));
+		s.y = magnitude(Vector<Component, 4>(m10, m11, m12, m13));
+		s.z = magnitude(Vector<Component, 4>(m20, m21, m22, m23));
+		return s;
+	}
+
+	// yaw-pitch-roll
+	// https://www.geometrictools.com/Documentation/EulerAngles.pdf
+	Vector<Component, 3> to_euler() const
+	{
+		assert(is_rotation_matrix(*this));
+
+		Vector<Component, 3> euler;
+
+		if (m20 < 1.0f)
+		{
+			if (m20 > -1.0f)
+			{
+				euler.x = TMath::asin(m20);
+				euler.y = TMath::atan2(-m21, m22);
+				euler.z = TMath::atan2(-m10, m00);
+			}
+			else
+			{
+				euler.x = -HALF_PI;
+				euler.y = -TMath::atan2(m01, m11);
+				euler.z = 0.0f;
+			}
+		}
+		else
+		{
+			euler.x = HALF_PI;
+			euler.y = TMath::atan2(m01, m11);
+			euler.z = 0.0f;
+		}
+
+		return euler;
+	}
+
+	Vector<Component, 4> row(const int& index) const
+	{
+		assert(index >= 0 && index <= 3);
+		Vector<Component, 4> ret;
+		switch (index)
+		{
+		case 0:
+			ret = Vector<Component, 4>(m00, m01, m02, m03);
+			break;
+		case 1:
+			ret = Vector<Component, 4>(m10, m11, m12, m13);
+			break;
+		case 2:
+			ret = Vector<Component, 4>(m20, m21, m22, m23);
+			break;
+		case 3:
+			ret = Vector<Component, 4>(m30, m31, m32, m33);
+			break;
+		}
+		return ret;
+	}
+
+	Vector<Component, 4> column(const int& index) const
+	{
+		assert(index >= 0 && index <= 3);
+		Vector<Component, 4> ret;
+		switch (index)
+		{
+		case 0:
+			ret = Vector<Component, 4>(m00, m10, m20, m30);
+			break;
+		case 1:
+			ret = Vector<Component, 4>(m01, m11, m21, m31);
+			break;
+		case 2:
+			ret = Vector<Component, 4>(m02, m12, m22, m32);
+			break;
+		case 3:
+			ret = Vector<Component, 4>(m03, m13, m23, m33);
+			break;
+		}
+		return ret;
+	}
 };
+
+constexpr Matrix<float, 3, 3> kMat3x3Identity = Matrix<float, 3, 3>
+(
+	1.f, 0.f, 0.f,
+	0.f, 1.f, 0.f,
+	0.f, 0.f, 1.f
+	);
+
+constexpr Matrix<float, 3, 3> kMat3x3Zero = Matrix<float, 3, 3>(0.f);
+
+constexpr Matrix<float, 4, 4> kMat4x4Identity = Matrix<float, 4, 4>
+(
+	1.f, 0.f, 0.f, 0.f,
+	0.f, 1.f, 0.f, 0.f,
+	0.f, 0.f, 1.f, 0.f,
+	0.f, 0.f, 0.f, 1.f
+	);
+
+constexpr Matrix<float, 4, 4> kMat4x4Zero = Matrix<float, 4, 4>(0.f);
+
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
-
-template<typename Component, size_t ROW, size_t COL>
-bool operator!=(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
-{
-	for (size_t idx = 0; idx < ROW * COL; ++idx) { if (lhs[idx] != rhs[idx]) return true; } return false;
-}
-
-template<typename Component, size_t ROW, size_t COL>
-bool operator==(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
-{
-	for (size_t idx = 0; idx < ROW * COL; ++idx) { if (lhs[idx] != rhs[idx]) return false; } return true;
-}
-
-template<typename Component, size_t ROW, size_t COL>
-Matrix<Component, ROW, COL> operator-(const Matrix<Component, ROW, COL>& v)
-{
-	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
-
-	for (size_t r = 0; r < ROW; ++r)
-	{
-		for (size_t c = 0; c < COL; ++c)
-		{
-			ret.at(r, c) = -v.at(r, c);
-		}
-	}
-
-	return ret;
-}
-
-template<typename Component, size_t ROW, size_t COL>
-Matrix<Component, ROW, COL> operator+(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
-{
-	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
-
-	for (size_t r = 0; r < ROW; ++r)
-	{
-		for (size_t c = 0; c < COL; ++c)
-		{
-			ret.at(r, c) = lhs.at(r, c) + rhs.at(r, c);
-		}
-	}
-
-	return ret;
-}
-
-template<typename Component, size_t ROW, size_t COL>
-Matrix<Component, ROW, COL> operator-(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
-{
-	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
-
-	for (size_t r = 0; r < ROW; ++r)
-	{
-		for (size_t c = 0; c < COL; ++c)
-		{
-			ret.at(r, c) = lhs.at(r, c) - rhs.at(r, c);
-		}
-	}
-
-	return ret;
-}
 
 template<typename Component, size_t ROW, size_t N, size_t COL>
 Matrix<Component, ROW, COL> operator*(const Matrix<Component, ROW, N>& lhs, const Matrix<Component, N, COL>& rhs)
@@ -264,8 +514,8 @@ template<typename Component>
 Matrix<Component, 3, 3> inverse(const Matrix<Component, 3, 3>& m)
 {
 	Component one_over_det = (Component)1 / determinant(m);
-	Matrix<Component, 3, 3> ret = Matrix<float, 3, 3>(1, 0, 0, 
-													  0, 1, 0, 
+	Matrix<Component, 3, 3> ret = Matrix<float, 3, 3>(1, 0, 0,
+													  0, 1, 0,
 													  0, 0, 1);
 
 	ret[0] = (m[5] * m[10] - m[6] * m[9]) * one_over_det;
@@ -300,10 +550,7 @@ Matrix<Component, 4, 4> inverse(const Matrix<Component, 4, 4>& m)
 	Component det = (s0 * c5) - (s1 * c4) + (s2 * c3) + (s3 * c2) - (s4 * c1) + (s5 * c0);
 
 	Component one_over_det = (Component)1 / det;
-	Matrix<Component, 4, 4> ret = Matrix<float, 4, 4>(1, 0, 0, 0, 
-													  0, 1, 0, 0, 
-													  0, 0, 1, 0, 
-													  0, 0, 0, 1);
+	Matrix<Component, 4, 4> ret = kMat4x4Identity;
 
 	ret[0] = +(m[5] * c5 - m[6] * c4 + m[7] * c3) * one_over_det;
 	ret[1] = -(m[1] * c5 - m[2] * c4 + m[3] * c3) * one_over_det;
@@ -325,26 +572,313 @@ Matrix<Component, 4, 4> inverse(const Matrix<Component, 4, 4>& m)
 	return ret;
 }
 
-template<typename Component, size_t ROW, size_t COL>
-Matrix<Component, ROW, COL> transpose(const Matrix<Component, ROW, COL>& m)
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> translation(const Vector<Component, 3>& translation)
 {
-	Matrix<Component, ROW, COL> ret = Matrix<Component, ROW, COL>();
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 3) = translation.x;
+	m.at(1, 3) = translation.y;
+	m.at(2, 3) = translation.z;
+	return m;
+}
 
-	for (size_t r = 0; r < ROW; ++r)
-	{
-		for (size_t c = 0; c < COL; ++c)
-		{
-			ret.at(c, r) = m.at(r, c);
-		}
-	}
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> rotation(const Vector<Component, 3>& axis, const Component& theta)
+{
+	Component rad = DEGREE2RAD(theta);
+	Component s = TMath::sin(rad);
+	Component c = TMath::cos(rad);
+	Vector<Component, 3> normalized_axis = normalize(axis);
+	Component x = normalized_axis.x;
+	Component y = normalized_axis.y;
+	Component z = normalized_axis.z;
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 0) = c + (1 - c) * x * x;
+	m.at(0, 1) = (1 - c) * x * y - s * z;
+	m.at(0, 2) = (1 - c) * x * z + s * y;
+	m.at(1, 0) = (1 - c) * y * x + s * z;
+	m.at(1, 1) = c + (1 - c) * y * y;
+	m.at(1, 2) = (1 - c) * y * z - s * x;
+	m.at(2, 0) = (1 - c) * z * x - s * y;
+	m.at(2, 1) = (1 - c) * z * y + s * x;
+	m.at(2, 2) = c + (1 - c) * z * z;
+	return m;
+}
 
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> scale(const Vector<Component, 3>& scale)
+{
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 0) = scale.x;
+	m.at(1, 1) = scale.y;
+	m.at(2, 2) = scale.z;
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> viewport(const int& x, const int& y, const int& w, const int& h)
+{
+	Matrix<Component, 4, 4> ret = kMat4x4Identity;
+	ret.at(0, 0) = w * 0.5f;
+	ret.at(0, 3) = x + (w * 0.5f);
+	ret.at(1, 1) = h * 0.5f;
+	ret.at(1, 3) = y + (h * 0.5f);
 	return ret;
 }
 
-template<typename Component, size_t ROW, size_t COL>
-TMATH_INLINE bool approx(const Matrix<Component, ROW, COL>& lhs, const Matrix<Component, ROW, COL>& rhs)
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> from_euler(const Vector<Component, 3>& euler)
 {
-	for (size_t idx = 0; idx < ROW * COL; ++idx) { if (abs(lhs[idx] - rhs[idx]) > EPSILON) return false; } return true;
+	return euler_x(euler.x) * euler_y(euler.y) * euler_z(euler.z);
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> from_angle(const Vector<Component, 3>& angles)
+{
+	return euler_x(DEGREE2RAD(angles.x)) * euler_y(DEGREE2RAD(angles.y)) * euler_z(DEGREE2RAD(angles.z));
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> euler_x(const Component& rad)
+{
+	Component c = TMath::cos(rad);
+	Component s = TMath::sin(rad);
+	return Matrix<Component, 4, 4>(
+		1, 0, 0, 0,
+		0, c, s, 0,
+		0, -s, c, 0,
+		0, 0, 0, 1
+		);
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> euler_y(const Component& rad)
+{
+	Component c = TMath::cos(rad);
+	Component s = TMath::sin(rad);
+	return Matrix<Component, 4, 4>(
+		c, 0, -s, 0,
+		0, 1, 0, 0,
+		s, 0, c, 0,
+		0, 0, 0, 1
+		);
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> euler_z(const Component& rad)
+{
+	Component c = TMath::cos(rad);
+	Component s = TMath::sin(rad);
+	return Matrix<Component, 4, 4>(
+		c, s, 0, 0,
+		-s, c, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+		);
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> lookat(const Vector<Component, 3>& eye, const Vector<Component, 3>& target, const Vector<Component, 3>& world_up)
+{
+#ifdef LEFT_HANDED
+	return lookat_lh(eye, target, world_up);
+#else
+	return lookat_rh(eye, target, world_up);
+#endif
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> lookat_lh(const Vector<Component, 3>& eye, const Vector<Component, 3>& target, const Vector<Component, 3>& world_up)
+{
+	Vector<Component, 3> forward = normalize(target - eye);
+	Vector<Component, 3> right = normalize(cross(normalize(world_up), forward));
+	Vector<Component, 3> up = cross(forward, right);
+
+	// UVN--right up forward
+	Matrix<Component, 4, 4> view = kMat4x4Identity;
+	view.at(0, 0) = right.x;
+	view.at(0, 1) = right.y;
+	view.at(0, 2) = right.z;
+	view.at(1, 0) = up.x;
+	view.at(1, 1) = up.y;
+	view.at(1, 2) = up.z;
+	view.at(2, 0) = forward.x;
+	view.at(2, 1) = forward.y;
+	view.at(2, 2) = forward.z;
+	view.at(0, 3) = -dot(right, eye);
+	view.at(1, 3) = -dot(up, eye);
+	view.at(2, 3) = -dot(forward, eye);
+
+	return view;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> lookat_rh(const Vector<Component, 3>& eye, const Vector<Component, 3>& target, const Vector<Component, 3>& world_up)
+{
+	Vector<Component, 3> forward = normalize(target - eye);
+	Vector<Component, 3> right = normalize(cross(forward, normalize(world_up)));
+	Vector<Component, 3> up = cross(right, forward);
+
+	// UVN--right up forward
+	Matrix<Component, 4, 4> view = kMat4x4Identity;
+	view.at(0, 0) = right.x;
+	view.at(0, 1) = right.y;
+	view.at(0, 2) = right.z;
+	view.at(1, 0) = up.x;
+	view.at(1, 1) = up.y;
+	view.at(1, 2) = up.z;
+	view.at(2, 0) = -forward.x;
+	view.at(2, 1) = -forward.y;
+	view.at(2, 2) = -forward.z;
+	view.at(0, 3) = -dot(right, eye);
+	view.at(1, 3) = -dot(up, eye);
+	view.at(2, 3) = dot(forward, eye);
+
+	return view;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> perspective(const Component& fov, const Component& aspect, const Component& near, const Component& far)
+{
+#ifdef LEFT_HANDED 
+#ifdef GL_LIKE
+	return perspective_lh_gl(fov, aspect, near, far);
+#else 
+	return perspective_lh_dx(fov, aspect, near, far);
+#endif
+#else
+#ifdef GL_LIKE
+	return perspective_rh_gl(fov, aspect, near, far);
+#else 
+	return perspective_rh_dx(fov, aspect, near, far);
+#endif
+#endif
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> perspective_rh_dx(const Component& fov, const Component& aspect, const Component& near, const Component& far)
+{
+	Component rad = DEGREE2RAD(fov * 0.5f);
+	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Matrix<Component, 4, 4> m = kMat4x4Zero;
+	m.at(0, 0) = cot / aspect;
+	m.at(1, 1) = cot;
+	m.at(2, 2) = -far / (far - near);
+	m.at(3, 2) = -1.0f;
+	m.at(2, 3) = -(far * near) / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> perspective_lh_dx(const Component& fov, const Component& aspect, const Component& near, const Component& far)
+{
+	Component rad = DEGREE2RAD(fov * 0.5f);
+	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Matrix<Component, 4, 4> m = kMat4x4Zero;
+	m.at(0, 0) = cot / aspect;
+	m.at(1, 1) = cot;
+	m.at(2, 2) = far / (far - near);
+	m.at(3, 2) = 1.0f;
+	m.at(2, 3) = -(far * near) / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> perspective_rh_gl(const Component& fov, const Component& aspect, const Component& near, const Component& far)
+{
+	Component rad = DEGREE2RAD(fov * 0.5f);
+	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Matrix<Component, 4, 4> m = kMat4x4Zero;
+	m.at(0, 0) = cot / aspect;
+	m.at(1, 1) = cot;
+	m.at(2, 2) = -(far + near) / (far - near);
+	m.at(3, 2) = -1.0f;
+	m.at(2, 3) = -2.0f * (far * near) / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> perspective_lh_gl(const Component& fov, const Component& aspect, const Component& near, const Component& far)
+{
+	Component rad = DEGREE2RAD(fov * 0.5f);
+	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Matrix<Component, 4, 4> m = kMat4x4Zero;
+	m.at(0, 0) = cot / aspect;
+	m.at(1, 1) = cot;
+	m.at(2, 2) = (far + near) / (far - near);
+	m.at(3, 2) = 1.0f;
+	m.at(2, 3) = -2.0f * (far * near) / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> ortho(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
+{
+#ifdef LEFT_HANDED 
+#ifdef GL_LIKE
+	return ortho_lh_gl(left, right, bottom, top, near, far);
+#else 
+	return ortho_lh_dx(left, right, bottom, top, near, far);
+#endif
+#else
+#ifdef GL_LIKE
+	return ortho_rh_gl(left, right, bottom, top, near, far);
+#else 
+	return ortho_rh_dx(left, right, bottom, top, near, far);
+#endif
+#endif
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> ortho_rh_dx(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
+{
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 0) = 2.0f / (right - left);
+	m.at(1, 1) = 2.0f / (top - bottom);
+	m.at(2, 2) = -1.0f / (far - near);
+	m.at(0, 3) = -(right + left) / (right - left);
+	m.at(1, 3) = -(top + bottom) / (top - bottom);
+	m.at(2, 3) = -near / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> ortho_lh_dx(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
+{
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 0) = 2.0f / (right - left);
+	m.at(1, 1) = 2.0f / (top - bottom);
+	m.at(2, 2) = 1.0f / (far - near);
+	m.at(0, 3) = -(right + left) / (right - left);
+	m.at(1, 3) = -(top + bottom) / (top - bottom);
+	m.at(2, 3) = -near / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> ortho_rh_gl(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
+{
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 0) = 2.0f / (right - left);
+	m.at(1, 1) = 2.0f / (top - bottom);
+	m.at(2, 2) = -2.0f / (far - near);
+	m.at(0, 3) = -(right + left) / (right - left);
+	m.at(1, 3) = -(top + bottom) / (top - bottom);
+	m.at(2, 3) = -(far + near) / (far - near);
+	return m;
+}
+
+template <typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> ortho_lh_gl(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
+{
+	Matrix<Component, 4, 4> m = kMat4x4Identity;
+	m.at(0, 0) = 2.0f / (right - left);
+	m.at(1, 1) = 2.0f / (top - bottom);
+	m.at(2, 2) = 2.0f / (far - near);
+	m.at(0, 3) = -(right + left) / (right - left);
+	m.at(1, 3) = -(top + bottom) / (top - bottom);
+	m.at(2, 3) = -(far + near) / (far - near);
+	return m;
 }
 
 END_NAMESPACE
