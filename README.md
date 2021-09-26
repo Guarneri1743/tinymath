@@ -120,11 +120,11 @@ Combined Transformation
 
 Perspective projection matrix
 
-	Matrix4x4 projection_mat = perspective(60.0f, 60.0f, 0.0f, 100.0f);
+	Matrix4x4 perspective_proj = perspective(60.0f, 60.0f, 0.0f, 100.0f);
 
 Ortho projection matrix
 
-	Matrix4x4 ortho_mat = ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+	Matrix4x4 ortho_proj = ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
 
 Lookat matrix
 
