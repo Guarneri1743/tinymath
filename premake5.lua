@@ -49,7 +49,9 @@ function setupProject()
 
    files { 
       "tinymath/*.*",
+      "tinymath/color/*.*",
       "tinymath/detail/*.*",
+      "tinymath/primitives/*.*",
       "sample/*.*" 
    }
 
