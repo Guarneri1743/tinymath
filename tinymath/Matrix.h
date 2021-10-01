@@ -2,7 +2,7 @@
 #include "MathDefine.h"
 #include "Vector.h"
 
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
 template <typename Component, size_t ROW, size_t COL> 
 struct Matrix
@@ -125,6 +125,12 @@ TMATH_INLINE Matrix<Component, 4, 4> ortho_rh_gl(const Component& left, const Co
 template<typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> ortho_lh_gl(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far);
 
+template<typename Component>
+TMATH_INLINE Matrix<Component, 3, 3> mat4x4_to_mat3x3(const Matrix<Component, 4, 4>& mat);
+
+template<typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> mat3x3_to_mat4x4(const Matrix<Component, 3, 3>& mat);
+
 END_NAMESPACE
 
-#include "Matrix.inl"
+#include "detail/Matrix.inl"

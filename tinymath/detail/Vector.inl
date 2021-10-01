@@ -1,4 +1,4 @@
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
 #define MODIFY_ELEMENTS(block)  size_t indices[] = { Indices ... };\
                                 for (size_t i = 0; i < sizeof...(Indices); i++)\
@@ -387,8 +387,9 @@ struct Vector<Component, 3>
 
 	Vector<Component, 3>() {}
 	constexpr Vector<Component, 3>(const Component& v) : x(v), y(v), z(v) {}
+	constexpr Vector<Component, 3>(const Vector<Component, 2>& v) : x(v.data[0]), y(v.data[1]), z(0.0f) {}
 	constexpr Vector<Component, 3>(const Component& c1, const Component& c2, const Component& c3) : x(c1), y(c2), z(c3) { }
-	constexpr Vector<Component, 3>(const Vector<Component, 3>& v) : x(v.x), y(v.y), z(v.z) {}
+	//constexpr Vector<Component, 3>(const Vector<Component, 3>& v) : x(v.x), y(v.y), z(v.z) {}
 
 	Component& operator[](const size_t& index) { return data[index]; }
 	const Component& operator[](const size_t& index) const { return data[index]; }
@@ -407,8 +408,10 @@ struct Vector<Component, 4>
 
 	Vector<Component, 4>() {}
 	constexpr Vector<Component, 4>(const Component& v) : x(v), y(v), z(v), w(v) {}
+	constexpr Vector<Component, 4>(const Vector<Component, 2>& v) : x(v.data[0]), y(v.data[1]), z(0.0f) {}
+	constexpr Vector<Component, 4>(const Vector<Component, 3>& v) : x(v.data[0]), y(v.data[1]), z(v.data[2]), w(0.0f) {}
 	constexpr Vector<Component, 4>(const Component& c1, const Component& c2, const Component& c3, const Component& c4) : x(c1), y(c2), z(c3), w(c4) {}
-	constexpr Vector<Component, 4>(const Vector<Component, 4>& v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
+	//constexpr Vector<Component, 4>(const Vector<Component, 4>& v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
 	Component& operator[](const size_t& index) { return data[index]; }
 	const Component& operator[](const size_t& index) const { return data[index]; }
@@ -458,7 +461,7 @@ Vector<Component, 3> cross(const Vector<Component, 3>& lhs, const Vector<Compone
 template<typename Component, size_t N>
 Component magnitude(const Vector<Component, N>& vector)
 {
-	Component ret = Component(); for (size_t i = 0; i < N; ++i) { ret += vector[i] * vector[i]; } return TMath::sqrt(ret);
+	Component ret = Component(); for (size_t i = 0; i < N; ++i) { ret += vector[i] * vector[i]; } return tinymath::sqrt(ret);
 }
 
 template<typename Component, size_t N>
@@ -470,25 +473,25 @@ Component length(const Vector<Component, N>& lhs, const Vector<Component, N>& rh
 template<typename Component, size_t N>
 Vector<Component, N> max(const Vector<Component, N>& lhs, const Vector<Component, N>& rhs)
 {
-	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = TMath::max(lhs[i], rhs[i]); } return ret;
+	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = tinymath::max(lhs[i], rhs[i]); } return ret;
 }
 
 template<typename Component, size_t N>
 Vector<Component, N> min(const Vector<Component, N>& lhs, const Vector<Component, N>& rhs)
 {
-	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = TMath::min(lhs[i], rhs[i]); } return ret;
+	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = tinymath::min(lhs[i], rhs[i]); } return ret;
 }
 
 template<typename Component, size_t N>
 Vector<Component, N> clamp(const Vector<Component, N>& v, const Vector<Component, N>& min, const Vector<Component, N>& max)
 {
-	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = TMath::clamp(v[i], min[i], max[i]); } return ret;
+	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = tinymath::clamp(v[i], min[i], max[i]); } return ret;
 }
 
 template<typename Component, size_t N>
 Vector<Component, N> clamp(const Vector<Component, N>& v, const Component& min, const Component& max)
 {
-	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = TMath::clamp(v[i], min, max); } return ret;
+	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = tinymath::clamp(v[i], min, max); } return ret;
 }
 
 template<typename Component, size_t N>
@@ -501,19 +504,31 @@ Vector<Component, N> normalize(const Vector<Component, N>& v)
 template<typename Component, size_t N>
 Vector<Component, N> lerp(const Vector<Component, N>& lhs, const Vector<Component, N>& rhs, float t)
 {
-	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = TMath::lerp(lhs[i], rhs[i], t); } return ret;
+	Vector<Component, N> ret = Vector<Component, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = tinymath::lerp(lhs[i], rhs[i], t); } return ret;
 }
 
 template<size_t N>
 Vector<float, N> saturate(const Vector<float, N>& v)
 {
-	Vector<float, N> ret = Vector<float, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = TMath::clamp(v[i], 0.0f, 1.0f); } return ret;
+	Vector<float, N> ret = Vector<float, N>(); for (size_t i = 0; i < N; ++i) { ret[i] = tinymath::clamp(v[i], 0.0f, 1.0f); } return ret;
 }
 
 template<typename Component, size_t N>
 bool approx(const Vector<Component, N>& lhs, const Vector<Component, N>& rhs)
 {
 	for (size_t i = 0; i < N; ++i) {  if (abs(lhs[i] - rhs[i]) > EPSILON) { return false; } }  return true;
+}
+
+template<typename Component>
+void calculate_right_up(const Vector<Component, 3>& forward, Vector<Component, 3>& right, Vector<Component, 3>& up)
+{
+#ifdef LEFT_HANDED
+	right = tinymath::normalize(tinymath::cross(kVec3fUp, forward));
+	up = tinymath::cross(forward, right);
+#else 
+	right = tinymath::normalize(tinymath::cross(forward, kVec3fUp));
+	up = tinymath::cross(right, forward);
+#endif
 }
 
 END_NAMESPACE

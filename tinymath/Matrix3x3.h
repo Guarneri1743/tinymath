@@ -2,8 +2,8 @@
 #include "MathDefine.h"
 #include "Matrix.h"
 
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
-typedef Matrix<float, 3, 3> Matrix3x3;
+typedef Matrix<float, 3, 3> mat3x3;
 
 END_NAMESPACE

@@ -1,4 +1,4 @@
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
 template<typename Component, size_t ROW, size_t N>
 Vector<Component, N> operator*(const Matrix<Component, ROW, N>& m, const Vector<Component, N>& v)

@@ -2,7 +2,7 @@
 #include "MathDefine.h"
 #include "Wrapper.h"
 
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
 template <typename Component, size_t N> struct Vector;
 
@@ -142,6 +142,9 @@ TMATH_INLINE Vector<Component, N> saturate(const Vector<Component, N>& v);
 template<typename Component, size_t N>
 TMATH_INLINE bool approx(const Vector<Component, N>& lhs, const Vector<Component, N>& rhs);
 
+template<typename Component>
+TMATH_INLINE void calculate_right_up(const Vector<Component, 3>& forward, Vector<Component, 3>& right, Vector<Component, 3>& up);
+
 END_NAMESPACE
 
-#include "Vector.inl"
+#include "detail/Vector.inl"

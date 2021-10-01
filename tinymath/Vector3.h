@@ -2,8 +2,8 @@
 #include "MathDefine.h"
 #include "Vector.h"
 
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
-typedef Vector<int, 4> Vec4i;
+typedef Vector<float, 3> vec3f;
 
 END_NAMESPACE

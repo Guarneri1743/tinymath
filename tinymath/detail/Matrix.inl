@@ -1,4 +1,6 @@
-TMATH_NAMESPACE
+#include <assert.h>
+
+TINYMATH_NAMESPACE
 
 #define rc2index(row, col, COL) row * COL + col
 
@@ -302,7 +304,7 @@ struct Matrix<Component, 4, 4>
 		f.x = at(2, 0);
 		f.y = at(2, 1);
 		f.z = at(2, 2);
-		return normaliz(f);
+		return normalize(f);
 	}
 
 	Vector<Component, 3> up() const
@@ -311,7 +313,7 @@ struct Matrix<Component, 4, 4>
 		u.x = at(1, 0);
 		u.y = at(1, 1);
 		u.z = at(1, 2);
-		return normaliz(u);
+		return normalize(u);
 	}
 
 	Vector<Component, 3> right() const
@@ -320,7 +322,7 @@ struct Matrix<Component, 4, 4>
 		r.x = at(0, 0);
 		r.y = at(0, 1);
 		r.z = at(0, 2);
-		return normaliz(u);
+		return normalize(r);
 	}
 
 	Vector<Component, 3> position() const
@@ -349,26 +351,26 @@ struct Matrix<Component, 4, 4>
 
 		Vector<Component, 3> euler;
 
-		if (m20 < 1.0f)
+		if (m20 < (Component)1)
 		{
-			if (m20 > -1.0f)
+			if (m20 > -(Component)1)
 			{
-				euler.x = TMath::asin(m20);
-				euler.y = TMath::atan2(-m21, m22);
-				euler.z = TMath::atan2(-m10, m00);
+				euler.x = tinymath::asin(m20);
+				euler.y = tinymath::atan2(-m21, m22);
+				euler.z = tinymath::atan2(-m10, m00);
 			}
 			else
 			{
 				euler.x = -HALF_PI;
-				euler.y = -TMath::atan2(m01, m11);
-				euler.z = 0.0f;
+				euler.y = -tinymath::atan2(m01, m11);
+				euler.z = (Component)0;
 			}
 		}
 		else
 		{
 			euler.x = HALF_PI;
-			euler.y = TMath::atan2(m01, m11);
-			euler.z = 0.0f;
+			euler.y = tinymath::atan2(m01, m11);
+			euler.z = (Component)0;
 		}
 
 		return euler;
@@ -477,9 +479,10 @@ Matrix<Component, ROW, COL> operator*(const Matrix<Component, ROW, N>& lhs, cons
 template<typename Component>
 Component determinant(const Matrix<Component, 3, 3>& m)
 {
-	return  m.at(0, 0) * (m.at(1, 1) * m.at(2, 2) - m.at(1, 2) * m.at(2, 1)) -
-		m.at(0, 1) * (m.at(1, 2) * m.at(2, 0) - m.at(1, 0) * m.at(2, 2)) +
-		m.at(0, 2) * (m.at(1, 0) * m.at(2, 1) - m.at(1, 1) * m.at(2, 0));
+	Component det = (m.at(0, 0) * (m.at(1, 1) * m.at(2, 2) - m.at(1, 2) * m.at(2, 1)) -
+					 m.at(0, 1) * (m.at(1, 0) * m.at(2, 2) - m.at(1, 2) * m.at(2, 0)) +
+					 m.at(0, 2) * (m.at(1, 0) * m.at(2, 1) - m.at(1, 1) * m.at(2, 0)));
+	return det;
 }
 
 template<typename Component>
@@ -518,18 +521,20 @@ Matrix<Component, 3, 3> inverse(const Matrix<Component, 3, 3>& m)
 													  0, 1, 0,
 													  0, 0, 1);
 
-	ret[0] = (m[5] * m[10] - m[6] * m[9]) * one_over_det;
-	ret[1] = -(m[1] * m[10] - m[2] * m[9]) * one_over_det;
-	ret[2] = (m[1] * m[6] - m[2] * m[5]) * one_over_det;
-	ret[4] = -(m[4] * m[10] - m[6] * m[8]) * one_over_det;
-	ret[5] = (m[0] * m[10] - m[2] * m[8]) * one_over_det;
-	ret[6] = -(m[0] * m[6] - m[2] * m[4]) * one_over_det;
-	ret[8] = (m[4] * m[9] - m[5] * m[8]) * one_over_det;
-	ret[9] = -(m[0] * m[9] - m[1] * m[8]) * one_over_det;
-	ret[10] = (m[0] * m[5] - m[1] * m[4]) * one_over_det;
+	ret.at(0, 0) = +(m.at(1, 1) * m.at(2, 2) - m.at(1, 2) * m.at(2, 1)) * one_over_det;
+	ret.at(0, 1) = -(m.at(0, 1) * m.at(2, 2) - m.at(0, 2) * m.at(2, 1)) * one_over_det;
+	ret.at(0, 2) = +(m.at(0, 1) * m.at(1, 2) - m.at(0, 2) * m.at(1, 1)) * one_over_det;
+	ret.at(1, 0) = -(m.at(1, 0) * m.at(2, 2) - m.at(1, 2) * m.at(2, 0)) * one_over_det;
+	ret.at(1, 1) = +(m.at(0, 0) * m.at(2, 2) - m.at(0, 2) * m.at(2, 0)) * one_over_det;
+	ret.at(1, 2) = -(m.at(0, 0) * m.at(1, 2) - m.at(0, 2) * m.at(1, 0)) * one_over_det;
+	ret.at(2, 0) = +(m.at(1, 0) * m.at(2, 1) - m.at(1, 1) * m.at(2, 0)) * one_over_det;
+	ret.at(2, 1) = -(m.at(0, 0) * m.at(2, 1) - m.at(0, 1) * m.at(2, 0)) * one_over_det;
+	ret.at(2, 2) = +(m.at(0, 0) * m.at(1, 1) - m.at(0, 1) * m.at(1, 0)) * one_over_det;
 	return ret;
 }
 
+// Gaussian Elimination with Partial Pivoting https://stuff.mit.edu/afs/athena/course/10/10.001/Web/Course_Notes/GaussElimPivoting.html
+// Cramer's rule is O(N^4) where Gaussian Elimination is O(N^3) https://www.reddit.com/r/math/comments/fkec7/why_would_you_use_gaussian_elimination_instead_of/
 template<typename Component>
 Matrix<Component, 4, 4> inverse(const Matrix<Component, 4, 4>& m)
 {
@@ -568,7 +573,6 @@ Matrix<Component, 4, 4> inverse(const Matrix<Component, 4, 4>& m)
 	ret[13] = +(m[0] * c3 - m[1] * c1 + m[2] * c0) * one_over_det;
 	ret[14] = -(m[12] * s3 - m[13] * s1 + m[14] * s0) * one_over_det;
 	ret[15] = +(m[8] * s3 - m[9] * s1 + m[10] * s0) * one_over_det;
-
 	return ret;
 }
 
@@ -586,8 +590,8 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> rotation(const Vector<Component, 3>& axis, const Component& theta)
 {
 	Component rad = DEGREE2RAD(theta);
-	Component s = TMath::sin(rad);
-	Component c = TMath::cos(rad);
+	Component s = tinymath::sin(rad);
+	Component c = tinymath::cos(rad);
 	Vector<Component, 3> normalized_axis = normalize(axis);
 	Component x = normalized_axis.x;
 	Component y = normalized_axis.y;
@@ -641,8 +645,8 @@ TMATH_INLINE Matrix<Component, 4, 4> from_angle(const Vector<Component, 3>& angl
 template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> euler_x(const Component& rad)
 {
-	Component c = TMath::cos(rad);
-	Component s = TMath::sin(rad);
+	Component c = tinymath::cos(rad);
+	Component s = tinymath::sin(rad);
 	return Matrix<Component, 4, 4>(
 		1, 0, 0, 0,
 		0, c, s, 0,
@@ -654,8 +658,8 @@ TMATH_INLINE Matrix<Component, 4, 4> euler_x(const Component& rad)
 template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> euler_y(const Component& rad)
 {
-	Component c = TMath::cos(rad);
-	Component s = TMath::sin(rad);
+	Component c = tinymath::cos(rad);
+	Component s = tinymath::sin(rad);
 	return Matrix<Component, 4, 4>(
 		c, 0, -s, 0,
 		0, 1, 0, 0,
@@ -667,8 +671,8 @@ TMATH_INLINE Matrix<Component, 4, 4> euler_y(const Component& rad)
 template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> euler_z(const Component& rad)
 {
-	Component c = TMath::cos(rad);
-	Component s = TMath::sin(rad);
+	Component c = tinymath::cos(rad);
+	Component s = tinymath::sin(rad);
 	return Matrix<Component, 4, 4>(
 		c, s, 0, 0,
 		-s, c, 0, 0,
@@ -759,12 +763,12 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> perspective_rh_dx(const Component& fov, const Component& aspect, const Component& near, const Component& far)
 {
 	Component rad = DEGREE2RAD(fov * 0.5f);
-	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Component cot = tinymath::cos(rad) / tinymath::sin(rad);
 	Matrix<Component, 4, 4> m = kMat4x4Zero;
 	m.at(0, 0) = cot / aspect;
 	m.at(1, 1) = cot;
 	m.at(2, 2) = -far / (far - near);
-	m.at(3, 2) = -1.0f;
+	m.at(3, 2) = -(Component)1;
 	m.at(2, 3) = -(far * near) / (far - near);
 	return m;
 }
@@ -773,12 +777,12 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> perspective_lh_dx(const Component& fov, const Component& aspect, const Component& near, const Component& far)
 {
 	Component rad = DEGREE2RAD(fov * 0.5f);
-	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Component cot = tinymath::cos(rad) / tinymath::sin(rad);
 	Matrix<Component, 4, 4> m = kMat4x4Zero;
 	m.at(0, 0) = cot / aspect;
 	m.at(1, 1) = cot;
 	m.at(2, 2) = far / (far - near);
-	m.at(3, 2) = 1.0f;
+	m.at(3, 2) = (Component)1;
 	m.at(2, 3) = -(far * near) / (far - near);
 	return m;
 }
@@ -787,13 +791,13 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> perspective_rh_gl(const Component& fov, const Component& aspect, const Component& near, const Component& far)
 {
 	Component rad = DEGREE2RAD(fov * 0.5f);
-	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Component cot = tinymath::cos(rad) / tinymath::sin(rad);
 	Matrix<Component, 4, 4> m = kMat4x4Zero;
 	m.at(0, 0) = cot / aspect;
 	m.at(1, 1) = cot;
 	m.at(2, 2) = -(far + near) / (far - near);
-	m.at(3, 2) = -1.0f;
-	m.at(2, 3) = -2.0f * (far * near) / (far - near);
+	m.at(3, 2) = -(Component)1;
+	m.at(2, 3) = -(Component)2 * (far * near) / (far - near);
 	return m;
 }
 
@@ -801,13 +805,13 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> perspective_lh_gl(const Component& fov, const Component& aspect, const Component& near, const Component& far)
 {
 	Component rad = DEGREE2RAD(fov * 0.5f);
-	Component cot = TMath::cos(rad) / TMath::sin(rad);
+	Component cot = tinymath::cos(rad) / tinymath::sin(rad);
 	Matrix<Component, 4, 4> m = kMat4x4Zero;
 	m.at(0, 0) = cot / aspect;
 	m.at(1, 1) = cot;
 	m.at(2, 2) = (far + near) / (far - near);
-	m.at(3, 2) = 1.0f;
-	m.at(2, 3) = -2.0f * (far * near) / (far - near);
+	m.at(3, 2) = (Component)1;
+	m.at(2, 3) = -(Component)2 * (far * near) / (far - near);
 	return m;
 }
 
@@ -833,9 +837,9 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> ortho_rh_dx(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
 {
 	Matrix<Component, 4, 4> m = kMat4x4Identity;
-	m.at(0, 0) = 2.0f / (right - left);
-	m.at(1, 1) = 2.0f / (top - bottom);
-	m.at(2, 2) = -1.0f / (far - near);
+	m.at(0, 0) = (Component)2 / (right - left);
+	m.at(1, 1) = (Component)2 / (top - bottom);
+	m.at(2, 2) = -(Component)1 / (far - near);
 	m.at(0, 3) = -(right + left) / (right - left);
 	m.at(1, 3) = -(top + bottom) / (top - bottom);
 	m.at(2, 3) = -near / (far - near);
@@ -846,9 +850,9 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> ortho_lh_dx(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
 {
 	Matrix<Component, 4, 4> m = kMat4x4Identity;
-	m.at(0, 0) = 2.0f / (right - left);
-	m.at(1, 1) = 2.0f / (top - bottom);
-	m.at(2, 2) = 1.0f / (far - near);
+	m.at(0, 0) = (Component)2 / (right - left);
+	m.at(1, 1) = (Component)2 / (top - bottom);
+	m.at(2, 2) = (Component)1 / (far - near);
 	m.at(0, 3) = -(right + left) / (right - left);
 	m.at(1, 3) = -(top + bottom) / (top - bottom);
 	m.at(2, 3) = -near / (far - near);
@@ -859,9 +863,9 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> ortho_rh_gl(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
 {
 	Matrix<Component, 4, 4> m = kMat4x4Identity;
-	m.at(0, 0) = 2.0f / (right - left);
-	m.at(1, 1) = 2.0f / (top - bottom);
-	m.at(2, 2) = -2.0f / (far - near);
+	m.at(0, 0) = (Component)2 / (right - left);
+	m.at(1, 1) = (Component)2 / (top - bottom);
+	m.at(2, 2) = -(Component)2 / (far - near);
 	m.at(0, 3) = -(right + left) / (right - left);
 	m.at(1, 3) = -(top + bottom) / (top - bottom);
 	m.at(2, 3) = -(far + near) / (far - near);
@@ -872,13 +876,45 @@ template <typename Component>
 TMATH_INLINE Matrix<Component, 4, 4> ortho_lh_gl(const Component& left, const Component& right, const Component& bottom, const Component& top, const Component& near, const Component& far)
 {
 	Matrix<Component, 4, 4> m = kMat4x4Identity;
-	m.at(0, 0) = 2.0f / (right - left);
-	m.at(1, 1) = 2.0f / (top - bottom);
-	m.at(2, 2) = 2.0f / (far - near);
+	m.at(0, 0) = (Component)2 / (right - left);
+	m.at(1, 1) = (Component)2 / (top - bottom);
+	m.at(2, 2) = (Component)2 / (far - near);
 	m.at(0, 3) = -(right + left) / (right - left);
 	m.at(1, 3) = -(top + bottom) / (top - bottom);
 	m.at(2, 3) = -(far + near) / (far - near);
 	return m;
+}
+
+template<typename Component>
+TMATH_INLINE Matrix<Component, 3, 3> mat4x4_to_mat3x3(const Matrix<Component, 4, 4>& mat)
+{
+	Matrix<Component, 3, 3> ret = kMat3x3Zero;
+	ret.m00 = mat.at(0, 0);
+	ret.m01 = mat.at(0, 1);
+	ret.m02 = mat.at(0, 2);
+	ret.m10 = mat.at(1, 0);
+	ret.m11 = mat.at(1, 1);
+	ret.m12 = mat.at(1, 2);
+	ret.m20 = mat.at(2, 0);
+	ret.m21 = mat.at(2, 1);
+	ret.m22 = mat.at(2, 2);
+	return ret;
+}
+
+template<typename Component>
+TMATH_INLINE Matrix<Component, 4, 4> mat3x3_to_mat4x4(const Matrix<Component, 3, 3>& mat)
+{
+	Matrix<Component, 4, 4> ret = kMat4x4Identity;
+	ret.m00 = mat.at(0, 0);
+	ret.m01 = mat.at(0, 1);
+	ret.m02 = mat.at(0, 2);
+	ret.m10 = mat.at(1, 0);
+	ret.m11 = mat.at(1, 1);
+	ret.m12 = mat.at(1, 2);
+	ret.m20 = mat.at(2, 0);
+	ret.m21 = mat.at(2, 1);
+	ret.m22 = mat.at(2, 2);
+	return ret;
 }
 
 END_NAMESPACE

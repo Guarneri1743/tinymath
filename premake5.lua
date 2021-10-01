@@ -1,6 +1,6 @@
 local solution_dir = "build/" .. _ACTION
-local include_dir = "include"
-local detail_dir = "include/detail"
+local include_dir = "tinymath"
+local detail_dir = "tinymath/detail"
 local sample_dir = "sample"
 
 function setupIncludeDirs()

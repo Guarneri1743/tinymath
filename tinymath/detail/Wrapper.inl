@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <cmath>
 
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
 template<typename T>
 T max(const T& lhs, const T& rhs)
@@ -23,16 +23,6 @@ T abs(const T& val)
 
 float sqrt(const float& x)
 {
-	//constexpr float kMagicNum = 0x5f3759df;
-	//const float xhalf = 0.5f * x;
-	//union // get bits for floating value
-	//{
-	//	float x;
-	//	int i;
-	//} u;
-	//u.x = x;
-	//u.i = (int)kMagicNum - (u.i >> 1);  // gives initial guess y0
-	//return x * u.x * (1.5f - xhalf * u.x * u.x);// Newton step, repeating increases accuracy 
 	return std::sqrt(x);
 }
 
@@ -51,9 +41,7 @@ int sgn(T val)
 template<typename T>
 void swap(T& a, T& b)
 {
-	T& tmp = a;
-	a = b;
-	b = tmp;
+	std::swap(a, b);
 }
 
 float sin(const float& rad)

@@ -1,6 +1,6 @@
 #pragma once
 
-#define TMATH_NAMESPACE namespace TMath {
+#define TINYMATH_NAMESPACE namespace tinymath {
 #define END_NAMESPACE }
 
 #ifdef WIN32
@@ -8,7 +8,7 @@
 #undef max
 #endif
 
-TMATH_NAMESPACE
+TINYMATH_NAMESPACE
 
 #ifndef FORCE_INLINE
 #define TMATH_INLINE inline
