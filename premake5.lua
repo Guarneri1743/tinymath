@@ -47,7 +47,7 @@ function setupSlotion()
 end
 
 function setupProject()
-   project "TinyMath"
+   project "tinymath"
    kind "ConsoleApp"
    language "C++"
 
