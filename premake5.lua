@@ -1,18 +1,14 @@
 local solution_dir = "build/" .. _ACTION
-local include_dir = "tinymath"
-local detail_dir = "tinymath/detail"
-local sample_dir = "sample"
 
 function setupIncludeDirs()
    includedirs {
-      include_dir,
-      detail_dir
+      ""
    }
 end
 
 function setupSlotion()
    location(solution_dir)
-   solution "TinyMath"
+   solution "tinymath"
       configurations {
          "Debug", 
          "Release"
@@ -52,9 +48,9 @@ function setupProject()
    language "C++"
 
    files { 
-      include_dir .. "/*.*",
-      detail_dir .. "/*.*",
-      sample_dir .. "/*.*" 
+      "tinymath/*.*",
+      "tinymath/detail/*.*",
+      "sample/*.*" 
    }
 
    filter { "configurations:Debug*" }

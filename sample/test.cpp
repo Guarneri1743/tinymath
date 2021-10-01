@@ -1,6 +1,6 @@
 #include <iostream>
 #include <assert.h>
-#include "TinyMath.h"
+#include "tinymath/tinymath.h"
 
 #define TEST(label, block) \
 			{\

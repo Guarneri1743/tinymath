@@ -8,27 +8,27 @@ run 'setup.bat'
 
 First of all, include the headers you want to use
 
-	#include "Vector2.h"
-	#include "Vector3.h"
-	#include "Vector4.h"
-	#include "Vector2Int.h"
-	#include "Vector3Int.h"
-	#include "Vector4Int.h"
-	#include "Matrix3x3.h"
-	#include "Matrix4x4.h"
-	#include "Computation.h"
+	#include "tinymath/Vector2.h"
+	#include "tinymath/Vector3.h"
+	#include "tinymath/Vector4.h"
+	#include "tinymath/Vector2Int.h"
+	#include "tinymath/Vector3Int.h"
+	#include "tinymath/Vector4Int.h"
+	#include "tinymath/Matrix3x3.h"
+	#include "tinymath/Matrix4x4.h"
+	#include "tinymath/Computation.h"
 
 	// or
 
-	#include "TinyMath.h" // you can simply include TinyMath.h instead of including each one of them for convenience
+	#include "tinymath/tinymath.h" // you can simply include tinymath.h instead of including each one of them for convenience
 
 
 
 Alternatively, you can include "Vector.h" and "Matrix.h" to define your own type name
 
-	#include "Vector.h"
-	#include "Matrix.h"
-	#include "Computation.h" 
+	#include "tinymath/Vector.h"
+	#include "tinymath/Matrix.h"
+	#include "tinymath/Computation.h" 
 
 	typedef Vector<uint32_t, 3> Vector3Uint;
 	typedef Matrix<int, 4, 3> Matrix4x3Int;
