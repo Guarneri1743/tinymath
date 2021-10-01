@@ -18,13 +18,9 @@ First of all, include the headers you want to use
 	#include "Matrix4x4.h"
 	#include "Computation.h"
 
-	using namespace TMath;
-
 	// or
 
 	#include "TinyMath.h" // you can simply include TinyMath.h instead of including each one of them for convenience
-
-	using namespace TMath;
 
 
 
@@ -42,21 +38,22 @@ Alternatively, you can include "Vector.h" and "Matrix.h" to define your own type
 
 Vector arithmetic operations
 	
-	Vec4f v1(0.3f, -2.7f, 7.8f, 1.0f);
-	Vec4f v2(3.8f, 7.4f, -20.3f, 3.0f);
-	Vec4f add = v1 + v2;
-	Vec4f mul = v1 * v2;
-	Vec4f div = v1 / v2;
-	Vec4f sub = v1 - v2;
+	tinymath::vec4f v1(0.3f, -2.7f, 7.8f, 1.0f);
+	tinymath::vec4f v2(3.8f, 7.4f, -20.3f, 3.0f);
+
+	tinymath::vec4f add = v1 + v2;
+	tinymath::vec4f mul = v1 * v2;
+	tinymath::vec4f div = v1 / v2;
+	tinymath::vec4f sub = v1 - v2;
 
 Swizzling
 
-	Vec4f add = v1.xyzw + v2.xxzy;
-	Vec4f mul = v1.xwyz * v2.yyxw;
+	tinymath::vec4f add = v1.xyzw + v2.xxzy;
+	tinymath::vec4f mul = v1.xwyz * v2.yyxw;
 
 Matrix arithmetic operations
 	
-	Matrix4x4 m1
+	tinymath::mat4x4 m1
 	(
 	1, -2, 3, 4,
 	1, 3, 0, 1,
@@ -64,7 +61,7 @@ Matrix arithmetic operations
 	0, 0, 0, 1
 	);
 	
-	Matrix4x4 m2
+	tinymath::mat4x4 m2
 	(
 	1, -2, 3, 4,
 	1, 3, 0, 1,
@@ -72,68 +69,67 @@ Matrix arithmetic operations
 	0, 0, 0, 1
 	);
 
-	Matrix4x4 mul = m1 * m2;
-	Matrix4x4 add = m1 + m2;
-	Matrix4x4 sub = m1 - m2;
+	tinymath::mat4x4 mul = m1 * m2;
+	tinymath::mat4x4 add = m1 + m2;
+	tinymath::mat4x4 sub = m1 - m2;
 
 Determinant
 
-	float det = determinant(m1)
+	float det = tinymath::determinant(m1)
 
 Transpose
 
-	Matrix4x4 inversed_m1 = inverse(m1);
+	tinymath::mat4x4 inversed_m1 = tinymath::inverse(m1);
 
 Inverse
 
-	Matrix4x4 transposed_m1 = transpose(m1);
+	tinymath::mat4x4 transposed_m1 = tinymath::transpose(m1);
 	
 Translation
 
-	Matrix4x4 t = translation(Vec3f(1.f, 2.f, 3.f));
-	Vec3f point = Vec3f(3.f, 4.f, 5.f);
-	Vec3f translated_pt = transform_point(t, point);
+	tinymath::mat4x4 t = tinymath::translation(tinymath::vec3f(1.f, 2.f, 3.f));
+	tinymath::vec3f point = tinymath::vec3f(3.f, 4.f, 5.f);
+	tinymath::vec3f translated_pt = tinymath::transform_point(t, point);
 
 Rotation
 	
-	Matrix4x4 r = rotation(Vec3f(0.f, 1.f, 0.f), 90.f);
-	Vec3f point = Vec3f(3.f, 4.f, 5.f);
-	Vec3f rotated_pt = transform_point(r, point);
+	tinymath::mat4x4 r = tinymath::rotation(Vec3f(0.f, 1.f, 0.f), 90.f);
+	tinymath::vec3f point = tinymath::vec3f(3.f, 4.f, 5.f);
+	tinymath::vec3f rotated_pt = tinymath::transform_point(r, point);
 
 Scaling
 
-	Matrix4x4 s = scale(Vec3f(2.f, 3.f, 4.f));
-	Vec3f point = Vec3f(3.f, 4.f, 5.f);
-	Vec3f scaled_pt = transform_point(s, point);
+	tinymath::mat4x4 s = tinymath::vec3fscale(Vec3f(2.f, 3.f, 4.f));
+	tinymath::vec3f point = tinymath::vec3f(3.f, 4.f, 5.f);
+	tinymath::vec3f scaled_pt = tinymath::vec3ftransform_point(s, point);
 
 Combined Transformation
 
-	Matrix4x4 t = translation(Vec3f(1.f, 2.f, 3.f));
-	Matrix4x4 r = rotation(Vec3f(0.f, 1.f, 0.f), 90.f);
-	Matrix4x4 s = scale(Vec3f(2.f, 3.f, 4.f));
-	Matrix4x4 trs = t * r * s;
+	tinymath::mat4x4 t = tinymath::translation(tinymath::vec3f(1.f, 2.f, 3.f));
+	tinymath::mat4x4 r = tinymath::rotation(tinymath::vec3f(0.f, 1.f, 0.f), 90.f);
+	tinymath::mat4x4 s = tinymath::scale(tinymath::vec3f(2.f, 3.f, 4.f));
+	tinymath::mat4x4 trs = t * r * s;
 
-	Vec3f point = Vec3f(3.f, 4.f, 5.f);
+	tinymath::vec3f point = tinymath::vec3f(3.f, 4.f, 5.f);
 
-	Vec3f transformed_pt = transform_point(trs, point);
+	tinymath::vec3f transformed_pt = tinymath::transform_point(trs, point);
 	
 
 Perspective projection matrix
 
-	Matrix4x4 perspective_proj = perspective(60.0f, 60.0f, 0.0f, 100.0f);
+	tinymath::mat4x4 perspective_proj = tinymath::perspective(60.0f, 60.0f, 0.0f, 100.0f);
 
 Ortho projection matrix
 
-	Matrix4x4 ortho_proj = ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+	tinymath::mat4x4 ortho_proj = tinymath::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
 
 Lookat matrix
 
-	Matrix4x4 lookat_mat = lookat(Vec3f(10.0f), Vec3f(0.0f), kVec3fUp);
+	tinymath::mat4x4 lookat_mat = tinymath::lookat(tinymath::vec3f(10.0f), tinymath::vec3f(0.0f), tinymath::vec3fkVec3fUp);
 
 # TODO
 
 - Quaternion
-- Lerp functions
 
 
 
